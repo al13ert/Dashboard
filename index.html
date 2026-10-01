@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>VINO Personal Training - 5-Screen Command Center</title>
+    <title>VINO Personal Training - Command Center</title>
     <!-- HLS.js Library for Broadcast Live Streams -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
@@ -17,7 +17,6 @@
         :root {
             --vino-red: #8a0625;
             --vino-dark: #0a0a0c;
-            --vino-card: #141418;
         }
 
         body, html {
@@ -33,15 +32,15 @@
             width: 100vw;
             height: 100vh;
             grid-template-columns: 100vw;
-            grid-template-rows: 75px calc(100vh - 120px) 45px;
+            grid-template-rows: 80px calc(100vh - 125px) 45px;
             background-color: #000;
         }
 
-        /* TIER 1: HEADER BANNER WITH BRANDING & WIDGETS */
+        /* TIER 1: HEADER BANNER (WHITE BACKGROUND FOR BLACK LOGO) */
         .header-bar {
             grid-row: 1;
-            background: linear-gradient(180deg, #181820 0%, #0d0d12 100%);
-            border-bottom: 3px solid var(--vino-red);
+            background: #ffffff; /* WHITE HEADER BAR FOR HIGH LOGO CONTRAST */
+            border-bottom: 4px solid var(--vino-red);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -55,8 +54,8 @@
         }
 
         .logo-img {
-            height: 52px;
-            max-width: 220px;
+            height: 58px;
+            max-width: 250px;
             object-fit: contain;
             display: block;
         }
@@ -65,7 +64,7 @@
             font-size: 2.2rem;
             font-weight: 900;
             letter-spacing: 4px;
-            color: #ffffff;
+            color: #000000;
             font-style: italic;
         }
 
@@ -76,8 +75,8 @@
         .header-widgets {
             display: flex;
             align-items: center;
-            gap: 20px;
-            font-size: 1.2rem;
+            gap: 15px;
+            font-size: 1.15rem;
             font-weight: 700;
         }
 
@@ -85,14 +84,15 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 5px 15px;
+            background: #f0f0f4;
+            color: #111111;
+            padding: 6px 16px;
             border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid #dddddd;
         }
 
-        #weather-box { color: #4da6ff; }
-        #date-box { color: #e0e0e0; }
+        #weather-box { color: #0066cc; }
+        #date-box { color: #222222; }
 
         #clock-box {
             background: var(--vino-red);
@@ -103,11 +103,11 @@
             border: none;
         }
 
-        /* TIER 2: MAIN 5-SCREEN BODY */
+        /* TIER 2: MAIN 5-SCREEN BODY WITH RED FRAMES */
         .main-display-body {
             grid-row: 2;
             display: grid;
-            grid-template-rows: 60% 40%;
+            grid-template-rows: 58% 42%;
             width: 100%;
             height: 100%;
             gap: 8px;
@@ -133,7 +133,7 @@
             gap: 8px;
         }
 
-        /* VIDEO CONTAINER BOXES WITH VINO RED BORDER FRAME */
+        /* VIDEO & PROMO CONTAINER BOXES WITH VINO RED BORDER FRAME */
         .video-box {
             position: relative;
             background-color: #000;
@@ -143,10 +143,10 @@
             border: 2px solid var(--vino-red); /* VINO RED FRAME */
             border-radius: 6px;
             overflow: hidden;
-            box-shadow: 0 0 10px rgba(138, 6, 37, 0.3); /* SUBTLE RED GLOW */
+            box-shadow: 0 0 10px rgba(138, 6, 37, 0.4);
         }
 
-        .video-box video, .video-box iframe {
+        .video-box video, .video-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -216,14 +216,11 @@
 
     <div class="dashboard">
 
-        <!-- TIER 1: HEADER BANNER WITH LOGO, DATE, WEATHER & CLOCK -->
+        <!-- TIER 1: WHITE HEADER BANNER WITH BRANDING & LIVE WIDGETS -->
         <div class="header-bar">
             
             <div class="logo-container">
-                <!-- VINO LOGO IMAGE -->
                 <img src="vino_logo.png" alt="VINO Personal Training" class="logo-img" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
-                
-                <!-- FALLBACK TEXT LOGO IF IMAGE FILE IS MISSING -->
                 <div id="fallback-logo" class="logo-text-fallback" style="display:none;">V<span>I</span>NO</div>
             </div>
 
@@ -235,30 +232,29 @@
                 <div class="widget-item" id="weather-box">
                     <span id="weather-icon">☀️</span>
                     <span id="weather-temp">--°C</span>
-                    <span style="font-size: 0.8rem; color:#888;">HK</span>
+                    <span style="font-size: 0.8rem; color:#666;">HK</span>
                 </div>
                 <div class="widget-item" id="clock-box">00:00:00</div>
             </div>
 
         </div>
 
-        <!-- TIER 2: MAIN 5-SCREEN BODY WITH RED FRAMES -->
+        <!-- TIER 2: MAIN DISPLAY GRID -->
         <div class="main-display-body">
             
             <!-- TOP HALF: 2 BIG SCREENS -->
             <div class="top-row-grid">
                 
-                <!-- BIG SCREEN 1: WORLD NEWS BROADCAST -->
+                <!-- TOP LEFT: REDBULL TV (ACTION SPORTS) -->
                 <div class="video-box">
-                    <div class="video-label">World News (Sky UK)</div>
-                    <video id="stream-world" autoplay muted playsinline></video>
+                    <div class="video-label">RedBull TV • Action Sports</div>
+                    <video id="stream-redbull" autoplay muted playsinline></video>
                 </div>
 
-                <!-- BIG SCREEN 2: VINO MOTIVATION REEL -->
+                <!-- TOP RIGHT: DW NEWS WORLD BROADCAST -->
                 <div class="video-box">
-                    <div class="video-label" style="border-left-color: #ffffff;">VINO Motivation & Athletic Performance</div>
-                    <video id="stream-motivation" autoplay loop muted playsinline 
-                           src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"></video>
+                    <div class="video-label">DW World News</div>
+                    <video id="stream-dw" autoplay muted playsinline></video>
                 </div>
 
             </div>
@@ -266,33 +262,33 @@
             <!-- BOTTOM HALF: 3 SMALLER SCREENS -->
             <div class="bottom-row-grid">
                 
-                <!-- SMALL SCREEN 1: HOY TV -->
+                <!-- BOTTOM LEFT: EURONEWS LIVE -->
                 <div class="video-box">
-                    <div class="video-label">HOY TV Live</div>
-                    <video id="stream-hoy" autoplay muted playsinline></video>
+                    <div class="video-label">Euronews Live</div>
+                    <video id="stream-euronews" autoplay muted playsinline></video>
                 </div>
 
-                <!-- SMALL SCREEN 2: VIUTV / LOCAL BROADCAST -->
+                <!-- BOTTOM CENTER: VINO PROTEIN SHAKE PROMO -->
                 <div class="video-box">
-                    <div class="video-label">ViuTV Live Feed</div>
-                    <iframe id="iframe-viu" src="https://www.youtube.com/embed/live_stream?channel=UCvIIn1wupM4I-zL3U3N2zGg&autoplay=1&mute=1&controls=0" allow="autoplay; encrypted-media"></iframe>
+                    <div class="video-label" style="border-left-color: #ffab00;">VINO Bar Feature</div>
+                    <img src="promo.jpg" alt="VINO House-Made Coffee Protein Shake">
                 </div>
 
-                <!-- SMALL SCREEN 3: RTHK TV 32 -->
+                <!-- BOTTOM RIGHT: NASA TV / WORLD STREAM -->
                 <div class="video-box">
-                    <div class="video-label">RTHK 32 • HK Sports & News</div>
-                    <video id="stream-rthk" autoplay muted playsinline></video>
+                    <div class="video-label">NASA Earth Live</div>
+                    <video id="stream-nasa" autoplay muted playsinline></video>
                 </div>
 
             </div>
 
         </div>
 
-        <!-- TIER 3: TICKER FOOTER -->
+        <!-- TIER 3: ANNOUNCEMENT TICKER FOOTER -->
         <div class="ticker-zone">
-            <div class="ticker-label">VINO LIVE</div>
+            <div class="ticker-label">VINO SPECIAL</div>
             <div class="ticker-text">
-                🔥 WELCOME TO VINO PERSONAL TRAINING • CONSISTENCY DRIVES RESULTS • LIVE LOCAL & WORLD SPORTS BROADCAST • HYDRATE & EXECUTE 🔥
+                ☕ NEW! HOUSE-MADE COFFEE PROTEIN SHAKE • LARGE HK$45 | SMALL HK$42 • AVAILABLE NOW AT THE VINO BAR • CONSISTENCY DRIVES RESULTS ☕
             </div>
         </div>
 
@@ -322,17 +318,22 @@
         fetchWeather();
         setInterval(fetchWeather, 600000);
 
-        // 3. INITIALIZE LIVE BROADCAST HLS STREAMS
+        // 3. INITIALIZE 4 VERIFIED 24/7 BROADCAST STREAMS
         window.addEventListener('DOMContentLoaded', function() {
             var streams = [
-                { id: 'stream-world', url: 'https://sky-skynewsuk-samsunguk.amagi.tv/playlist.m3u8' },
-                { id: 'stream-hoy', url: 'https://hoytv-live-stream.hoy.tv/ch78/index.m3u8' },
-                { id: 'stream-rthk', url: 'https://rthklive2-lh.akamaihd.net/i/rthk32_1@168450/index_2052_av-b.m3u8' }
+                // Stream 1: RedBull TV Action Sports
+                { id: 'stream-redbull', url: 'https://rbmn-live.akamaized.net/hls/live/591070/GEO_GLOBAL/master.m3u8' },
+                // Stream 2: DW News World Broadcast
+                { id: 'stream-dw', url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8' },
+                // Stream 3: Euronews Live
+                { id: 'stream-euronews', url: 'https://euronews-euronews-england-samsunguk.amagi.tv/playlist.m3u8' },
+                // Stream 4: NASA HD Live
+                { id: 'stream-nasa', url: 'https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8' }
             ];
 
             streams.forEach(function(s) {
                 var elem = document.getElementById(s.id);
-                if (Hls.isSupported()) {
+                if (elem && Hls.isSupported()) {
                     var hls = new Hls();
                     hls.loadSource(s.url);
                     hls.attachMedia(elem);
@@ -340,7 +341,7 @@
                         elem.muted = true;
                         elem.play().catch(function(e) { console.log("Autoplay block on " + s.id, e); });
                     });
-                } else if (elem.canPlayType('application/vnd.apple.mpegurl')) {
+                } else if (elem && elem.canPlayType('application/vnd.apple.mpegurl')) {
                     elem.src = s.url;
                     elem.muted = true;
                     elem.play();

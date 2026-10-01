@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>VINO Personal Training - Dashboard</title>
-    <!-- HLS.js Library for Streaming -->
+    <!-- HLS.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         * {
@@ -26,34 +26,34 @@
             color: #ffffff;
         }
 
-        /* 2-COLUMN MAIN LAYOUT (LEFT CONTENT 73% / RIGHT SIDEBAR 27%) */
+        /* OPTIMIZED 2-COLUMN LAYOUT: 80% MAIN CONTENT / 20% SLIM SIDEBAR */
         .layout-container {
             display: grid;
-            grid-template-columns: 73% 27%;
+            grid-template-columns: 80% 20%;
             width: 100vw;
             height: 100vh;
             background-color: #000000;
         }
 
-        /* LEFT CONTENT AREA: TOP 2 TV CHANNELS + BOTTOM BIG PROMO */
+        /* LEFT CONTENT AREA */
         .left-content {
             display: grid;
-            grid-template-rows: 45% 55%;
+            grid-template-rows: 48% 52%;
             height: 100vh;
-            padding: 8px;
-            gap: 8px;
+            padding: 6px;
+            gap: 6px;
         }
 
-        /* TOP ROW: 2 SIDE-BY-SIDE LIVE TV CHANNELS (50% / 50%) */
+        /* TOP ROW: 2 LIVE TV STATIONS (PERFECT 16:9 PROPORTION) */
         .tv-channels-row {
             display: grid;
-            grid-template-columns: calc(50% - 4px) calc(50% - 4px);
-            gap: 8px;
+            grid-template-columns: calc(50% - 3px) calc(50% - 3px);
+            gap: 6px;
             width: 100%;
             height: 100%;
         }
 
-        /* BOTTOM ROW: BIG PROMO PROTEIN SHAKE DISPLAY */
+        /* BOTTOM ROW: PROMO IMAGE */
         .promo-big-row {
             width: 100%;
             height: 100%;
@@ -66,7 +66,7 @@
             justify-content: center;
             align-items: center;
             border: 2px solid var(--vino-red);
-            border-radius: 6px;
+            border-radius: 5px;
             overflow: hidden;
             box-shadow: 0 0 10px rgba(138, 6, 37, 0.4);
             width: 100%;
@@ -83,75 +83,85 @@
 
         .media-label {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 8px;
+            left: 8px;
             background: rgba(10, 10, 12, 0.9);
             color: #ffffff;
-            padding: 4px 10px;
-            border-left: 4px solid var(--vino-red);
-            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-left: 3px solid var(--vino-red);
+            font-size: 0.75rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
             border-radius: 3px;
             z-index: 5;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
-        /* RIGHT THICKER SIDEBAR */
+        /* SLIM SIDEBAR (20% WIDTH) */
         .right-sidebar {
             background: #0e0e12;
-            border-left: 4px solid var(--vino-red);
+            border-left: 3px solid var(--vino-red);
             display: flex;
             flex-direction: column;
-            padding: 10px;
-            gap: 8px;
+            padding: 8px;
+            gap: 6px;
             height: 100vh;
         }
 
-        /* VINO LOGO BOX (WHITE BACKGROUND FOR MAX CONTRAST) */
+        /* VINO LOGO CONTAINER */
         .sidebar-logo-box {
             background: #ffffff;
-            border-radius: 6px;
-            padding: 8px;
+            border-radius: 5px;
+            padding: 6px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             border-bottom: 3px solid var(--vino-red);
         }
 
         .sidebar-logo-img {
-            max-height: 50px;
+            max-height: 42px;
             max-width: 100%;
             object-fit: contain;
         }
 
         .sidebar-logo-fallback {
-            font-size: 2rem;
+            font-size: 1.6rem;
             font-weight: 900;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             color: #000000;
             font-style: italic;
+            text-align: center;
+        }
+
+        .sidebar-logo-sub {
+            font-size: 0.55rem;
+            font-weight: 800;
+            color: #333333;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: -2px;
         }
 
         .sidebar-logo-fallback span { color: var(--vino-red); }
 
-        /* WEATHER & TIME WIDGET CARD */
+        /* TIME & WEATHER WIDGET */
         .widget-card {
             background: #181820;
             border: 1px solid #2a2a35;
-            border-radius: 6px;
-            padding: 8px 10px;
+            border-radius: 5px;
+            padding: 6px 8px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
         }
 
         .widget-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 700;
         }
 
@@ -159,33 +169,33 @@
             background: var(--vino-red);
             color: #ffffff;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             font-weight: 900;
             text-align: center;
-            padding: 3px;
-            border-radius: 4px;
+            padding: 2px;
+            border-radius: 3px;
             letter-spacing: 1px;
         }
 
-        /* WORLD MARKETS PANEL */
+        /* MARKET INDEX PANEL */
         .market-card {
             background: #181820;
             border: 1px solid #2a2a35;
-            border-radius: 6px;
-            padding: 6px 8px;
+            border-radius: 5px;
+            padding: 5px 6px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
         }
 
         .market-header {
-            font-size: 0.75rem;
+            font-size: 0.68rem;
             font-weight: 900;
             color: #ffab00;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
             border-bottom: 1px solid #282835;
-            padding-bottom: 3px;
+            padding-bottom: 2px;
             display: flex;
             justify-content: space-between;
         }
@@ -193,42 +203,42 @@
         .market-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 4px;
+            gap: 3px;
         }
 
         .market-item {
             background: #121218;
-            padding: 3px 5px;
-            border-radius: 4px;
+            padding: 2px 4px;
+            border-radius: 3px;
             display: flex;
             flex-direction: column;
         }
 
         .market-name {
-            font-size: 0.65rem;
+            font-size: 0.58rem;
             color: #aaaaaa;
             font-weight: 700;
         }
 
         .market-val {
-            font-size: 0.8rem;
+            font-size: 0.72rem;
             font-weight: 800;
             color: #ffffff;
         }
 
         .market-change {
-            font-size: 0.65rem;
+            font-size: 0.58rem;
             font-weight: 700;
         }
 
         .up { color: #00e676; }
         .down { color: #ff5252; }
 
-        /* SPORTS RSS PUSH NEWS PANEL */
+        /* SPORTS RSS NEWS PUSH PANEL */
         .rss-panel {
             background: #14141a;
             border: 1px solid #282832;
-            border-radius: 6px;
+            border-radius: 5px;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -238,53 +248,53 @@
         .rss-header {
             background: var(--vino-red);
             color: #ffffff;
-            padding: 6px 10px;
+            padding: 5px 8px;
             font-weight: 900;
-            font-size: 0.82rem;
-            letter-spacing: 1px;
+            font-size: 0.72rem;
+            letter-spacing: 0.8px;
             text-transform: uppercase;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
 
         .rss-feed-list {
-            padding: 6px;
+            padding: 5px;
             overflow-y: hidden;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
             flex: 1;
         }
 
         .rss-item {
             background: #1c1c24;
             border-left: 3px solid #ffab00;
-            padding: 6px 8px;
-            border-radius: 4px;
+            padding: 5px 6px;
+            border-radius: 3px;
         }
 
         .rss-item-title {
-            font-size: 0.78rem;
+            font-size: 0.7rem;
             font-weight: 800;
             color: #ffffff;
             margin-bottom: 2px;
-            line-height: 1.25;
+            line-height: 1.2;
         }
 
         .rss-item-snippet {
-            font-size: 0.68rem;
-            color: #cccccc;
-            line-height: 1.2;
+            font-size: 0.6rem;
+            color: #bbbbbb;
+            line-height: 1.15;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .rss-item-time {
-            font-size: 0.62rem;
+            font-size: 0.55rem;
             color: #ffab00;
             font-weight: 700;
         }
@@ -294,44 +304,43 @@
 
     <div class="layout-container">
 
-        <!-- LEFT AREA: 2 TV CHANNELS TOP + BIG PROMO BOTTOM -->
+        <!-- LEFT AREA: 80% WIDTH FOR BETTER PROPORTIONS -->
         <div class="left-content">
             
-            <!-- TOP ROW: 2 LIVE TV STATIONS -->
             <div class="tv-channels-row">
-                <!-- TV 1: RTHK 32 -->
                 <div class="media-box">
                     <div class="media-label">RTHK 32 • HK Live</div>
                     <video id="tv-1" autoplay muted playsinline></video>
                 </div>
 
-                <!-- TV 2: DW NEWS WORLD -->
                 <div class="media-box">
                     <div class="media-label">DW World News</div>
                     <video id="tv-2" autoplay muted playsinline></video>
                 </div>
             </div>
 
-            <!-- BOTTOM ROW: BIG PROMO PROTEIN SHAKE DISPLAY -->
             <div class="promo-big-row">
                 <div class="media-box" style="border-width: 3px;">
-                    <div class="media-label" style="border-left-color: #ffab00; font-size: 0.95rem; padding: 6px 14px;">VINO Bar Special</div>
+                    <div class="media-label" style="border-left-color: #ffab00; font-size: 0.85rem; padding: 4px 12px;">VINO Bar Special</div>
                     <img src="promo.jpg" alt="VINO House-Made Coffee Protein Shake">
                 </div>
             </div>
 
         </div>
 
-        <!-- RIGHT SIDEBAR: LOGO, WEATHER, MARKETS & SPORTS RSS NEWS -->
+        <!-- RIGHT SIDEBAR: 20% SLIM WIDTH -->
         <div class="right-sidebar">
             
-            <!-- VINO LOGO (WHITE BOX) -->
+            <!-- VINO LOGO (UPDATED WITHOUT NUTRITION) -->
             <div class="sidebar-logo-box">
                 <img src="vino_logo.png" alt="VINO Personal Training" class="sidebar-logo-img" onerror="this.style.display='none'; document.getElementById('sidebar-logo-fallback').style.display='block';">
-                <div id="sidebar-logo-fallback" class="sidebar-logo-fallback" style="display:none;">V<span>I</span>NO</div>
+                <div id="sidebar-logo-fallback" class="sidebar-logo-fallback" style="display:none;">
+                    V<span>I</span>NO
+                    <div class="sidebar-logo-sub">Personal Training</div>
+                </div>
             </div>
 
-            <!-- TIME & WEATHER WIDGET -->
+            <!-- TIME & WEATHER -->
             <div class="widget-card">
                 <div id="clock-display">00:00:00</div>
                 <div class="widget-row" style="color: #dddddd;">
@@ -339,15 +348,15 @@
                 </div>
                 <div class="widget-row" style="color: #4da6ff;">
                     <span>☀ HK Temp</span>
-                    <span id="weather-temp" style="font-size: 1rem; color: #ffffff;">--°C</span>
+                    <span id="weather-temp" style="font-size: 0.95rem; color: #ffffff;">--°C</span>
                 </div>
             </div>
 
-            <!-- LIVE WORLD MARKET INDEX -->
+            <!-- WORLD MARKETS -->
             <div class="market-card">
                 <div class="market-header">
                     <span>📊 World Markets</span>
-                    <span style="font-size: 0.6rem; color: #888;">LIVE</span>
+                    <span style="font-size: 0.55rem; color: #888;">LIVE</span>
                 </div>
                 <div class="market-grid" id="market-container">
                     <div class="market-item">
@@ -373,14 +382,14 @@
                 </div>
             </div>
 
-            <!-- LIVE WORLD SPORTS RSS PUSH NEWS -->
+            <!-- WORLD SPORTS RSS PUSH -->
             <div class="rss-panel">
                 <div class="rss-header">
                     <span>🏆</span>
                     <span>World Sports Push</span>
                 </div>
                 <div class="rss-feed-list" id="rss-container">
-                    <div style="color: #888; font-size: 0.75rem; text-align: center; margin-top: 15px;">Fetching live sports headlines...</div>
+                    <div style="color: #888; font-size: 0.7rem; text-align: center; margin-top: 10px;">Loading sports headlines...</div>
                 </div>
             </div>
 
@@ -389,7 +398,6 @@
     </div>
 
     <script>
-        // 1. LIVE CLOCK & DATE
         function updateClockAndDate() {
             var now = new Date();
             document.getElementById('clock-display').innerText = now.toLocaleTimeString();
@@ -399,7 +407,6 @@
         setInterval(updateClockAndDate, 1000);
         updateClockAndDate();
 
-        // 2. LIVE HK OBSERVATORY WEATHER API
         function fetchWeather() {
             fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en')
                 .then(response => response.json())
@@ -412,7 +419,6 @@
         fetchWeather();
         setInterval(fetchWeather, 600000);
 
-        // 3. LIVE WORLD MARKET DATA FETCH
         function fetchMarketData() {
             fetch('https://query1.finance.yahoo.com/v7/finance/quote?symbols=^HSI,^DJI,^GSPC,^IXIC')
                 .then(response => response.json())
@@ -451,10 +457,10 @@
         fetchMarketData();
         setInterval(fetchMarketData, 300000);
 
-        // 4. DETAILED WORLD SPORTS RSS PUSH NEWS (BBC SPORT)
         function fetchSportsRSS() {
-            var rssUrl = 'http://feeds.bbci.co.uk/sport/rss.xml';
-            var apiUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(rssUrl);
+            var rssUrl = 'https://rss.app/feeds/skysports.xml'; 
+            var fallbackRss = 'http://feeds.bbci.co.uk/sport/rss.xml';
+            var apiUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(fallbackRss);
 
             fetch(apiUrl)
                 .then(response => response.json())
@@ -463,19 +469,16 @@
                         var container = document.getElementById('rss-container');
                         container.innerHTML = '';
                         
-                        // Render top 3 detailed sports news items
-                        data.items.slice(0, 3).forEach(function(item) {
+                        data.items.slice(0, 4).forEach(function(item) {
                             var div = document.createElement('div');
                             div.className = 'rss-item';
-                            
-                            // Format description clean snippet
                             var cleanDesc = item.description ? item.description.replace(/<[^>]*>?/gm, '') : '';
                             var pubTime = new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                             
                             div.innerHTML = 
                                 '<div class="rss-item-title">' + item.title + '</div>' +
                                 '<div class="rss-item-snippet">' + cleanDesc + '</div>' +
-                                '<div class="rss-item-time">⚽ BBC SPORT • ' + pubTime + '</div>';
+                                '<div class="rss-item-time">🏆 WORLD SPORTS • ' + pubTime + '</div>';
                             
                             container.appendChild(div);
                         });
@@ -484,9 +487,8 @@
                 .catch(err => { console.log("Sports RSS Fetch error:", err); });
         }
         fetchSportsRSS();
-        setInterval(fetchSportsRSS, 120000); // Auto-refresh sports news every 2 minutes
+        setInterval(fetchSportsRSS, 120000);
 
-        // 5. INITIALIZE 2 TV CHANNELS
         function loadStream(id, liveUrl) {
             var elem = document.getElementById(id);
             if (!elem) return;

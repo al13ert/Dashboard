@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>VINO Personal Training - HK Command Center</title>
-    <!-- HLS.js Library -->
+    <title>VINO Personal Training - Dashboard</title>
+    <!-- HLS.js Library for Streaming -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         * {
@@ -26,109 +26,40 @@
             color: #ffffff;
         }
 
-        .dashboard {
+        /* 2-COLUMN MAIN LAYOUT (LEFT CONTENT 75% / RIGHT SIDEBAR 25%) */
+        .layout-container {
             display: grid;
+            grid-template-columns: 75% 25%;
             width: 100vw;
             height: 100vh;
-            grid-template-columns: 100vw;
-            grid-template-rows: 80px calc(100vh - 125px) 45px;
-            background-color: #000;
+            background-color: #000000;
         }
 
-        /* TIER 1: WHITE HEADER BANNER */
-        .header-bar {
-            grid-row: 1;
-            background: #ffffff;
-            border-bottom: 4px solid var(--vino-red);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 30px;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logo-img {
-            height: 58px;
-            max-width: 250px;
-            object-fit: contain;
-            display: block;
-        }
-
-        .logo-text-fallback {
-            font-size: 2.2rem;
-            font-weight: 900;
-            letter-spacing: 4px;
-            color: #000000;
-            font-style: italic;
-        }
-
-        .logo-text-fallback span { color: var(--vino-red); }
-
-        .header-widgets {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 1.15rem;
-            font-weight: 700;
-        }
-
-        .widget-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #f0f0f4;
-            color: #111111;
-            padding: 6px 16px;
-            border-radius: 6px;
-            border: 1px solid #dddddd;
-        }
-
-        #weather-box { color: #0066cc; }
-        #date-box { color: #222222; }
-
-        #clock-box {
-            background: var(--vino-red);
-            color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: 900;
-            letter-spacing: 1px;
-            border: none;
-        }
-
-        /* TIER 2: MAIN 5-SCREEN BODY */
-        .main-display-body {
-            grid-row: 2;
+        /* LEFT CONTENT AREA: TOP 3 TV CHANNELS + BOTTOM BIG PROMO */
+        .left-content {
             display: grid;
-            grid-template-rows: 60% 40%;
-            width: 100%;
-            height: 100%;
-            gap: 8px;
+            grid-template-rows: 45% 55%;
+            height: 100vh;
             padding: 8px;
-            background-color: #000;
-        }
-
-        .top-row-grid {
-            display: grid;
-            grid-template-columns: 50% 50%;
-            width: 100%;
-            height: 100%;
             gap: 8px;
         }
 
-        .bottom-row-grid {
+        /* TOP ROW: 3 SIDE-BY-SIDE LIVE TV CHANNELS */
+        .tv-channels-row {
             display: grid;
             grid-template-columns: calc(33.33% - 5.33px) calc(33.33% - 5.33px) calc(33.34% - 5.33px);
+            gap: 8px;
             width: 100%;
             height: 100%;
-            gap: 8px;
         }
 
-        .video-box {
+        /* BOTTOM ROW: BIG PROMO PROTEIN SHAKE DISPLAY */
+        .promo-big-row {
+            width: 100%;
+            height: 100%;
+        }
+
+        .media-box {
             position: relative;
             background-color: #000;
             display: flex;
@@ -138,9 +69,11 @@
             border-radius: 6px;
             overflow: hidden;
             box-shadow: 0 0 10px rgba(138, 6, 37, 0.4);
+            width: 100%;
+            height: 100%;
         }
 
-        .video-box video, .video-box img {
+        .media-box video, .media-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -148,7 +81,7 @@
             background: #000;
         }
 
-        .video-label {
+        .media-label {
             position: absolute;
             top: 10px;
             left: 10px;
@@ -165,139 +98,223 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
-        /* TIER 3: ANNOUNCEMENT TICKER FOOTER */
-        .ticker-zone {
-            grid-row: 3;
-            background: #0d0d12;
-            border-top: 2px solid var(--vino-red);
+        /* RIGHT THICKER SIDEBAR (VINO LOGO, WEATHER, RSS NEWS PUSH) */
+        .right-sidebar {
+            background: #0e0e12;
+            border-left: 4px solid var(--vino-red);
             display: flex;
-            align-items: center;
-            overflow: hidden;
-            white-space: nowrap;
+            flex-direction: column;
+            padding: 12px;
+            gap: 12px;
+            height: 100vh;
         }
 
-        .ticker-label {
-            background: var(--vino-red);
-            color: #fff;
-            padding: 0 25px;
-            height: 100%;
+        /* VINO LOGO BOX (WHITE BACKGROUND FOR MAX CONTRAST) */
+        .sidebar-logo-box {
+            background: #ffffff;
+            border-radius: 6px;
+            padding: 12px;
             display: flex;
+            justify-content: center;
             align-items: center;
+            border-bottom: 3px solid var(--vino-red);
+        }
+
+        .sidebar-logo-img {
+            max-height: 65px;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .sidebar-logo-fallback {
+            font-size: 2.2rem;
             font-weight: 900;
-            font-size: 1.05rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            z-index: 10;
+            letter-spacing: 4px;
+            color: #000000;
+            font-style: italic;
         }
 
-        .ticker-text {
-            display: inline-block;
-            padding-left: 100%;
-            animation: ticker 30s linear infinite;
-            font-size: 1.15rem;
+        .sidebar-logo-fallback span { color: var(--vino-red); }
+
+        /* WEATHER & TIME WIDGET CARD */
+        .widget-card {
+            background: #181820;
+            border: 1px solid #2a2a35;
+            border-radius: 6px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .widget-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
             font-weight: 700;
+        }
+
+        #clock-display {
+            background: var(--vino-red);
             color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.4rem;
+            font-weight: 900;
+            text-align: center;
+            padding: 6px;
+            border-radius: 4px;
             letter-spacing: 1px;
         }
 
-        @keyframes ticker {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
+        /* RSS PUSH NEWS PANEL */
+        .rss-panel {
+            background: #14141a;
+            border: 1px solid #282832;
+            border-radius: 6px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .rss-header {
+            background: var(--vino-red);
+            color: #ffffff;
+            padding: 8px 12px;
+            font-weight: 900;
+            font-size: 0.95rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rss-feed-list {
+            padding: 10px;
+            overflow-y: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .rss-item {
+            background: #1c1c24;
+            border-left: 3px solid #ffab00;
+            padding: 10px;
+            border-radius: 4px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .rss-item-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .rss-item-time {
+            font-size: 0.7rem;
+            color: #aaaaaa;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <div class="dashboard">
+    <div class="layout-container">
 
-        <!-- TIER 1: WHITE HEADER BANNER -->
-        <div class="header-bar">
+        <!-- LEFT AREA: 3 TV CHANNELS TOP + BIG PROMO BOTTOM -->
+        <div class="left-content">
             
-            <div class="logo-container">
-                <img src="vino_logo.png" alt="VINO Personal Training" class="logo-img" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
-                <div id="fallback-logo" class="logo-text-fallback" style="display:none;">V<span>I</span>NO</div>
-            </div>
-
-            <div class="header-widgets">
-                <div class="widget-item" id="date-box">
-                    <span>📅</span>
-                    <span id="live-date">---, -- ---</span>
-                </div>
-                <div class="widget-item" id="weather-box">
-                    <span id="weather-icon">☀️</span>
-                    <span id="weather-temp">--°C</span>
-                    <span style="font-size: 0.8rem; color:#666;">HK</span>
-                </div>
-                <div class="widget-item" id="clock-box">00:00:00</div>
-            </div>
-
-        </div>
-
-        <!-- TIER 2: MAIN DISPLAY GRID -->
-        <div class="main-display-body">
-            
-            <!-- TOP HALF: 2 BIG SCREENS -->
-            <div class="top-row-grid">
+            <!-- TOP 3 LIVE TV STATIONS -->
+            <div class="tv-channels-row">
                 
-                <!-- TOP LEFT: SKY NEWS UK (BIG SCREEN 1) -->
-                <div class="video-box">
-                    <div class="video-label">Sky News UK Live</div>
-                    <video id="stream-sky" autoplay muted playsinline loop></video>
+                <!-- TV 1: RTHK 32 -->
+                <div class="media-box">
+                    <div class="media-label">RTHK 32 • HK Live</div>
+                    <video id="tv-1" autoplay muted playsinline></video>
                 </div>
 
-                <!-- TOP RIGHT: VINO COFFEE SHAKE PROMO (BIG SCREEN 2) -->
-                <div class="video-box">
-                    <div class="video-label" style="border-left-color: #ffab00;">VINO Bar Feature</div>
+                <!-- TV 2: DW NEWS WORLD -->
+                <div class="media-box">
+                    <div class="media-label">DW World News</div>
+                    <video id="tv-2" autoplay muted playsinline></video>
+                </div>
+
+                <!-- TV 3: FRANCE 24 -->
+                <div class="media-box">
+                    <div class="media-label">France 24 Live</div>
+                    <video id="tv-3" autoplay muted playsinline></video>
+                </div>
+
+            </div>
+
+            <!-- BOTTOM BIG PROMO FEATURE -->
+            <div class="promo-big-row">
+                <div class="media-box" style="border-width: 3px;">
+                    <div class="media-label" style="border-left-color: #ffab00; font-size: 0.95rem; padding: 6px 14px;">VINO Bar Special</div>
                     <img src="promo.jpg" alt="VINO House-Made Coffee Protein Shake">
                 </div>
-
-            </div>
-
-            <!-- BOTTOM HALF: 3 SMALLER SCREENS -->
-            <div class="bottom-row-grid">
-                
-                <!-- BOTTOM LEFT: RTHK 32 -->
-                <div class="video-box">
-                    <div class="video-label">RTHK 32 • HK Live</div>
-                    <video id="stream-rthk" autoplay muted playsinline loop></video>
-                </div>
-
-                <!-- BOTTOM CENTER: DW NEWS WORLD -->
-                <div class="video-box">
-                    <div class="video-label">DW World News</div>
-                    <video id="stream-dw" autoplay muted playsinline loop></video>
-                </div>
-
-                <!-- BOTTOM RIGHT: FRANCE 24 ENGLISH -->
-                <div class="video-box">
-                    <div class="video-label">France 24 Live</div>
-                    <video id="stream-france24" autoplay muted playsinline loop></video>
-                </div>
-
             </div>
 
         </div>
 
-        <!-- TIER 3: ANNOUNCEMENT TICKER FOOTER -->
-        <div class="ticker-zone">
-            <div class="ticker-label">VINO SPECIAL</div>
-            <div class="ticker-text">
-                ☕ NEW! HOUSE-MADE COFFEE PROTEIN SHAKE • LARGE HK$45 | SMALL HK$42 • AVAILABLE NOW AT THE VINO BAR • CONSISTENCY DRIVES RESULTS ☕
+        <!-- RIGHT SIDEBAR: LOGO, WEATHER, TIME & RSS NEWS PUSH -->
+        <div class="right-sidebar">
+            
+            <!-- VINO LOGO (WHITE BOX) -->
+            <div class="sidebar-logo-box">
+                <img src="vino_logo.png" alt="VINO Personal Training" class="sidebar-logo-img" onerror="this.style.display='none'; document.getElementById('sidebar-logo-fallback').style.display='block';">
+                <div id="sidebar-logo-fallback" class="sidebar-logo-fallback" style="display:none;">V<span>I</span>NO</div>
             </div>
+
+            <!-- TIME & WEATHER WIDGET -->
+            <div class="widget-card">
+                <div id="clock-display">00:00:00</div>
+                <div class="widget-row" style="color: #dddddd;">
+                    <span>📅 <span id="live-date">---, -- ---</span></span>
+                </div>
+                <div class="widget-row" style="color: #4da6ff;">
+                    <span>☀️️ HK Temp</span>
+                    <span id="weather-temp" style="font-size: 1.1rem; color: #ffffff;">--°C</span>
+                </div>
+            </div>
+
+            <!-- LIVE RSS NEWS PUSH FEED -->
+            <div class="rss-panel">
+                <div class="rss-header">
+                    <span>📡</span>
+                    <span>HK & World Live News</span>
+                </div>
+                <div class="rss-feed-list" id="rss-container">
+                    <div style="color: #888; font-size: 0.85rem; text-align: center; margin-top: 20px;">Fetching latest news push...</div>
+                </div>
+            </div>
+
         </div>
 
     </div>
 
     <script>
+        // 1. LIVE CLOCK & DATE
         function updateClockAndDate() {
             var now = new Date();
-            document.getElementById('clock-box').innerText = now.toLocaleTimeString();
+            document.getElementById('clock-display').innerText = now.toLocaleTimeString();
             var options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
             document.getElementById('live-date').innerText = now.toLocaleDateString('en-GB', options);
         }
         setInterval(updateClockAndDate, 1000);
         updateClockAndDate();
 
+        // 2. LIVE HK OBSERVATORY WEATHER API
         function fetchWeather() {
             fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en')
                 .then(response => response.json())
@@ -310,6 +327,33 @@
         fetchWeather();
         setInterval(fetchWeather, 600000);
 
+        // 3. LIVE RSS NEWS PUSH PULLER (RTHK Express News)
+        function fetchRSSNews() {
+            var rssUrl = 'https://rthk.hk/rthk/news/rss/e_expressnews_elocal.xml';
+            var apiUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(rssUrl);
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ok' && data.items.length > 0) {
+                        var container = document.getElementById('rss-container');
+                        container.innerHTML = '';
+                        // Display top 5 latest news items
+                        data.items.slice(0, 5).forEach(function(item) {
+                            var div = document.createElement('div');
+                            div.className = 'rss-item';
+                            var pubTime = new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            div.innerHTML = '<div class="rss-item-title">' + item.title + '</div><div class="rss-item-time">🕒 ' + pubTime + '</div>';
+                            container.appendChild(div);
+                        });
+                    }
+                })
+                .catch(err => { console.log("RSS Fetch error:", err); });
+        }
+        fetchRSSNews();
+        setInterval(fetchRSSNews, 120000); // Refresh news feed every 2 minutes
+
+        // 4. INITIALIZE 3 TV CHANNELS
         function loadStream(id, liveUrl) {
             var elem = document.getElementById(id);
             if (!elem) return;
@@ -317,8 +361,7 @@
             if (Hls.isSupported()) {
                 var hls = new Hls({
                     manifestLoadingTimeOut: 10000,
-                    manifestLoadingMaxRetry: 5,
-                    levelLoadingTimeOut: 10000
+                    manifestLoadingMaxRetry: 5
                 });
                 hls.loadSource(liveUrl);
                 hls.attachMedia(elem);
@@ -349,11 +392,9 @@
         }
 
         window.addEventListener('DOMContentLoaded', function() {
-            // Highly Reliable Global Stream Endpoints
-            loadStream('stream-sky', 'https://sky-skynewsuk-samsunguk.amagi.tv/playlist.m3u8');
-            loadStream('stream-rthk', 'https://rthklive2-lh.akamaihd.net/i/rthk32_1@168450/index_1080_av-b.m3u8');
-            loadStream('stream-dw', 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8');
-            loadStream('stream-france24', 'https://static.france24.com/live/F24_EN_LO_HLS/live_tv.m3u8');
+            loadStream('tv-1', 'https://rthklive2-lh.akamaihd.net/i/rthk32_1@168450/index_1080_av-b.m3u8');
+            loadStream('tv-2', 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8');
+            loadStream('tv-3', 'https://static.france24.com/live/F24_EN_LO_HLS/live_tv.m3u8');
         });
     </script>
 

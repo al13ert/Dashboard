@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>VINO Personal Training - Command Center</title>
-    <!-- HLS.js Library for Broadcast Live Streams -->
+    <title>VINO Personal Training - HK Command Center</title>
+    <!-- HLS.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         * {
@@ -26,7 +26,6 @@
             color: #ffffff;
         }
 
-        /* DASHBOARD GRID CONTAINER (1920x1080) */
         .dashboard {
             display: grid;
             width: 100vw;
@@ -36,7 +35,7 @@
             background-color: #000;
         }
 
-        /* TIER 1: WHITE HEADER BANNER FOR MAXIMUM LOGO CONTRAST */
+        /* TIER 1: WHITE HEADER BANNER */
         .header-bar {
             grid-row: 1;
             background: #ffffff;
@@ -68,9 +67,7 @@
             font-style: italic;
         }
 
-        .logo-text-fallback span {
-            color: var(--vino-red);
-        }
+        .logo-text-fallback span { color: var(--vino-red); }
 
         .header-widgets {
             display: flex;
@@ -103,11 +100,11 @@
             border: none;
         }
 
-        /* TIER 2: MAIN 5-SCREEN BODY WITH VINO RED BORDERS */
+        /* TIER 2: MAIN 5-SCREEN BODY */
         .main-display-body {
             grid-row: 2;
             display: grid;
-            grid-template-rows: 58% 42%;
+            grid-template-rows: 60% 40%;
             width: 100%;
             height: 100%;
             gap: 8px;
@@ -115,7 +112,6 @@
             background-color: #000;
         }
 
-        /* TOP HALF: 2 BIG SCREENS */
         .top-row-grid {
             display: grid;
             grid-template-columns: 50% 50%;
@@ -124,7 +120,6 @@
             gap: 8px;
         }
 
-        /* BOTTOM HALF: 3 SMALLER SCREENS */
         .bottom-row-grid {
             display: grid;
             grid-template-columns: calc(33.33% - 5.33px) calc(33.33% - 5.33px) calc(33.34% - 5.33px);
@@ -133,7 +128,6 @@
             gap: 8px;
         }
 
-        /* VIDEO & PROMO CONTAINER BOXES WITH VINO RED BORDER FRAME */
         .video-box {
             position: relative;
             background-color: #000;
@@ -245,16 +239,16 @@
             <!-- TOP HALF: 2 BIG SCREENS -->
             <div class="top-row-grid">
                 
-                <!-- TOP LEFT: AL JAZEERA ENGLISH -->
+                <!-- TOP LEFT: AL JAZEERA LIVE -->
                 <div class="video-box">
                     <div class="video-label">Al Jazeera English Live</div>
                     <video id="stream-aljazeera" autoplay muted playsinline></video>
                 </div>
 
-                <!-- TOP RIGHT: DW NEWS WORLD -->
+                <!-- TOP RIGHT: VINO COFFEE SHAKE PROMO (BIG SCREEN) -->
                 <div class="video-box">
-                    <div class="video-label">DW World News</div>
-                    <video id="stream-dw" autoplay muted playsinline></video>
+                    <div class="video-label" style="border-left-color: #ffab00;">VINO Bar Feature</div>
+                    <img src="promo.jpg" alt="VINO House-Made Coffee Protein Shake">
                 </div>
 
             </div>
@@ -262,22 +256,22 @@
             <!-- BOTTOM HALF: 3 SMALLER SCREENS -->
             <div class="bottom-row-grid">
                 
-                <!-- BOTTOM LEFT: REDBULL TV -->
+                <!-- BOTTOM LEFT: RTHK 32 -->
+                <div class="video-box">
+                    <div class="video-label">RTHK 32 • HK Live</div>
+                    <video id="stream-rthk" autoplay muted playsinline></video>
+                </div>
+
+                <!-- BOTTOM CENTER: DW NEWS WORLD -->
+                <div class="video-box">
+                    <div class="video-label">DW World News</div>
+                    <video id="stream-dw" autoplay muted playsinline></video>
+                </div>
+
+                <!-- BOTTOM RIGHT: REDBULL TV SPORTS -->
                 <div class="video-box">
                     <div class="video-label">RedBull TV • Action Sports</div>
                     <video id="stream-redbull" autoplay muted playsinline></video>
-                </div>
-
-                <!-- BOTTOM CENTER: VINO PROTEIN SHAKE PROMO -->
-                <div class="video-box">
-                    <div class="video-label" style="border-left-color: #ffab00;">VINO Bar Feature</div>
-                    <img src="promo.jpg" alt="VINO House-Made Coffee Protein Shake">
-                </div>
-
-                <!-- BOTTOM RIGHT: FRANCE 24 ENGLISH -->
-                <div class="video-box">
-                    <div class="video-label">France 24 Live</div>
-                    <video id="stream-france24" autoplay muted playsinline></video>
                 </div>
 
             </div>
@@ -295,7 +289,6 @@
     </div>
 
     <script>
-        // 1. LIVE CLOCK AND DATE UPDATER
         function updateClockAndDate() {
             var now = new Date();
             document.getElementById('clock-box').innerText = now.toLocaleTimeString();
@@ -305,7 +298,6 @@
         setInterval(updateClockAndDate, 1000);
         updateClockAndDate();
 
-        // 2. LIVE HK OBSERVATORY WEATHER API
         function fetchWeather() {
             fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en')
                 .then(response => response.json())
@@ -318,48 +310,26 @@
         fetchWeather();
         setInterval(fetchWeather, 600000);
 
-        // 3. INITIALIZE STABLE HLS BROADCAST STREAMS WITH RETRY LOGIC
         window.addEventListener('DOMContentLoaded', function() {
             var streams = [
-                // Stream 1: Al Jazeera English Live
                 { id: 'stream-aljazeera', url: 'https://live-hls-web-aje.getaj.net/AJE/03.m3u8' },
-                // Stream 2: DW News World Broadcast
+                { id: 'stream-rthk', url: 'https://rthklive2-lh.akamaihd.net/i/rthk32_1@168450/index_1080_av-b.m3u8' },
                 { id: 'stream-dw', url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8' },
-                // Stream 3: RedBull TV Action Sports
-                { id: 'stream-redbull', url: 'https://rbmn-live.akamaized.net/hls/live/591070/GEO_GLOBAL/master.m3u8' },
-                // Stream 4: France 24 English
-                { id: 'stream-france24', url: 'https://static.france24.com/live/F24_EN_LO_HLS/live_tv.m3u8' }
+                { id: 'stream-redbull', url: 'https://rbmn-live.akamaized.net/hls/live/591070/GEO_GLOBAL/master.m3u8' }
             ];
 
             streams.forEach(function(s) {
                 var elem = document.getElementById(s.id);
                 if (elem && Hls.isSupported()) {
                     var hls = new Hls({
-                        manifestLoadingTimeOut: 15000,
-                        manifestLoadingMaxRetry: 5,
-                        levelLoadingTimeOut: 15000,
-                        levelLoadingMaxRetry: 5
+                        manifestLoadingTimeOut: 10000,
+                        manifestLoadingMaxRetry: 6
                     });
                     hls.loadSource(s.url);
                     hls.attachMedia(elem);
                     hls.on(Hls.Events.MANIFEST_PARSED, function() {
                         elem.muted = true;
                         elem.play().catch(function(e) { console.log("Autoplay block on " + s.id, e); });
-                    });
-                    hls.on(Hls.Events.ERROR, function (event, data) {
-                        if (data.fatal) {
-                            switch (data.type) {
-                                case Hls.ErrorTypes.NETWORK_ERROR:
-                                    hls.startLoad();
-                                    break;
-                                case Hls.ErrorTypes.MEDIA_ERROR:
-                                    hls.recoverMediaError();
-                                    break;
-                                default:
-                                    hls.destroy();
-                                    break;
-                            }
-                        }
                     });
                 } else if (elem && elem.canPlayType('application/vnd.apple.mpegurl')) {
                     elem.src = s.url;

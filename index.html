@@ -26,7 +26,7 @@
             color: #ffffff;
         }
 
-        /* OPTIMIZED 2-COLUMN LAYOUT: 80% MAIN CONTENT / 20% SLIM SIDEBAR */
+        /* 2-COLUMN MAIN LAYOUT (LEFT CONTENT 80% / RIGHT SIDEBAR 20%) */
         .layout-container {
             display: grid;
             grid-template-columns: 80% 20%;
@@ -37,26 +37,19 @@
 
         /* LEFT CONTENT AREA */
         .left-content {
-            display: grid;
-            grid-template-rows: 48% 52%;
+            display: flex;
+            flex-direction: column;
             height: 100vh;
-            padding: 6px;
-            gap: 6px;
+            padding: 10px;
+            gap: 10px;
         }
 
-        /* TOP ROW: 2 LIVE TV STATIONS (PERFECT 16:9 PROPORTION) */
+        /* TOP ROW: 2 LIVE TV STATIONS LOCKED TO 16:9 PROPORTION */
         .tv-channels-row {
             display: grid;
-            grid-template-columns: calc(50% - 3px) calc(50% - 3px);
-            gap: 6px;
+            grid-template-columns: calc(50% - 5px) calc(50% - 5px);
+            gap: 10px;
             width: 100%;
-            height: 100%;
-        }
-
-        /* BOTTOM ROW: PROMO IMAGE */
-        .promo-big-row {
-            width: 100%;
-            height: 100%;
         }
 
         .media-box {
@@ -66,18 +59,45 @@
             justify-content: center;
             align-items: center;
             border: 2px solid var(--vino-red);
-            border-radius: 5px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(138, 6, 37, 0.4);
+            width: 100%;
+            aspect-ratio: 16 / 9; /* FORCES STANDARD WIDESCREEN BROADCAST RATIO */
+        }
+
+        /* FIT BROADCAST FEEDS PROPERLY WITHOUT STRETCHING */
+        .media-box video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* KEEPS EXACT BROADCAST PROPORTIONS */
+            background: #000;
+        }
+
+        /* BOTTOM ROW: PROMO BANNER AREA */
+        .promo-big-row {
+            width: 100%;
+            flex: 1;
+        }
+
+        .promo-box {
+            position: relative;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid var(--vino-red);
+            border-radius: 6px;
             overflow: hidden;
             box-shadow: 0 0 10px rgba(138, 6, 37, 0.4);
             width: 100%;
             height: 100%;
         }
 
-        .media-box video, .media-box img {
+        .promo-box img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            border: none;
+            object-fit: contain; /* PRESERVES PROMO POSTER RATIO */
             background: #000;
         }
 
@@ -97,7 +117,7 @@
             z-index: 5;
         }
 
-        /* SLIM SIDEBAR (20% WIDTH) */
+        /* RIGHT SLIM SIDEBAR (20% WIDTH) */
         .right-sidebar {
             background: #0e0e12;
             border-left: 3px solid var(--vino-red);
@@ -112,7 +132,7 @@
         .sidebar-logo-box {
             background: #ffffff;
             border-radius: 5px;
-            padding: 6px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -304,9 +324,10 @@
 
     <div class="layout-container">
 
-        <!-- LEFT AREA: 80% WIDTH FOR BETTER PROPORTIONS -->
+        <!-- LEFT AREA -->
         <div class="left-content">
             
+            <!-- TOP ROW: 2 LIVE TV STATIONS (LOCKED TO 16:9 PROPORTION) -->
             <div class="tv-channels-row">
                 <div class="media-box">
                     <div class="media-label">RTHK 32 • HK Live</div>
@@ -319,8 +340,9 @@
                 </div>
             </div>
 
+            <!-- BOTTOM ROW: PROMO BANNER AREA -->
             <div class="promo-big-row">
-                <div class="media-box" style="border-width: 3px;">
+                <div class="promo-box">
                     <div class="media-label" style="border-left-color: #ffab00; font-size: 0.85rem; padding: 4px 12px;">VINO Bar Special</div>
                     <img src="promo.jpg" alt="VINO House-Made Coffee Protein Shake">
                 </div>
@@ -328,10 +350,10 @@
 
         </div>
 
-        <!-- RIGHT SIDEBAR: 20% SLIM WIDTH -->
+        <!-- RIGHT SIDEBAR (20% SLIM WIDTH) -->
         <div class="right-sidebar">
             
-            <!-- VINO LOGO (UPDATED WITHOUT NUTRITION) -->
+            <!-- VINO LOGO -->
             <div class="sidebar-logo-box">
                 <img src="vino_logo.png" alt="VINO Personal Training" class="sidebar-logo-img" onerror="this.style.display='none'; document.getElementById('sidebar-logo-fallback').style.display='block';">
                 <div id="sidebar-logo-fallback" class="sidebar-logo-fallback" style="display:none;">
@@ -458,7 +480,6 @@
         setInterval(fetchMarketData, 300000);
 
         function fetchSportsRSS() {
-            var rssUrl = 'https://rss.app/feeds/skysports.xml'; 
             var fallbackRss = 'http://feeds.bbci.co.uk/sport/rss.xml';
             var apiUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(fallbackRss);
 

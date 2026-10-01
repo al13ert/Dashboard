@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>VINO Personal Training - Dashboard</title>
+    <title>VINO Personal Training - Command Center</title>
     <!-- HLS.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
@@ -26,90 +26,53 @@
             color: #ffffff;
         }
 
-        /* 2-COLUMN MAIN LAYOUT (LEFT CONTENT 80% / RIGHT SIDEBAR 20%) */
-        .layout-container {
+        /* 1080P DASHBOARD CONTAINER */
+        .dashboard {
             display: grid;
-            grid-template-columns: 80% 20%;
             width: 100vw;
             height: 100vh;
+            grid-template-rows: 65% 35%;
+            padding: 8px;
+            gap: 8px;
             background-color: #000000;
         }
 
-        /* LEFT CONTENT AREA */
-        .left-content {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            padding: 10px;
-            gap: 10px;
-        }
-
-        /* TOP ROW: 2 LIVE TV STATIONS LOCKED TO 16:9 PROPORTION */
-        .tv-channels-row {
+        /* TOP ZONE: TWO NATIVE 16:9 TV SCREENS */
+        .top-zone {
             display: grid;
-            grid-template-columns: calc(50% - 5px) calc(50% - 5px);
-            gap: 10px;
+            grid-template-columns: calc(50% - 4px) calc(50% - 4px);
+            gap: 8px;
             width: 100%;
+            height: 100%;
         }
 
-        .media-box {
+        .tv-box {
             position: relative;
             background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             border: 2px solid var(--vino-red);
             border-radius: 6px;
             overflow: hidden;
-            box-shadow: 0 0 10px rgba(138, 6, 37, 0.4);
-            width: 100%;
-            aspect-ratio: 16 / 9; /* FORCES STANDARD WIDESCREEN BROADCAST RATIO */
-        }
-
-        /* FIT BROADCAST FEEDS PROPERLY WITHOUT STRETCHING */
-        .media-box video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* KEEPS EXACT BROADCAST PROPORTIONS */
-            background: #000;
-        }
-
-        /* BOTTOM ROW: PROMO BANNER AREA */
-        .promo-big-row {
-            width: 100%;
-            flex: 1;
-        }
-
-        .promo-box {
-            position: relative;
-            background-color: #000;
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 3px solid var(--vino-red);
-            border-radius: 6px;
-            overflow: hidden;
-            box-shadow: 0 0 10px rgba(138, 6, 37, 0.4);
-            width: 100%;
-            height: 100%;
         }
 
-        .promo-box img {
+        .tv-box video {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* PRESERVES PROMO POSTER RATIO */
+            object-fit: contain; /* NATIVE UNSTRETCHED BROADCAST */
             background: #000;
         }
 
-        .media-label {
+        .tv-label {
             position: absolute;
-            top: 8px;
-            left: 8px;
+            top: 10px;
+            left: 10px;
             background: rgba(10, 10, 12, 0.9);
             color: #ffffff;
-            padding: 4px 8px;
-            border-left: 3px solid var(--vino-red);
-            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-left: 4px solid var(--vino-red);
+            font-size: 0.8rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -117,149 +80,114 @@
             z-index: 5;
         }
 
-        /* RIGHT SLIM SIDEBAR (20% WIDTH) */
-        .right-sidebar {
+        /* BOTTOM ZONE: 3 HORIZONTAL DASHBOARD CARDS */
+        .bottom-zone {
+            display: grid;
+            grid-template-columns: 35% 30% 35%;
+            gap: 8px;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* CARD 1: PROMO IMAGE */
+        .promo-card {
+            position: relative;
+            background: #000;
+            border: 2px solid var(--vino-red);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .promo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* CARD 2: BRANDING, WEATHER & MARKETS */
+        .info-card {
             background: #0e0e12;
-            border-left: 3px solid var(--vino-red);
+            border: 2px solid var(--vino-red);
+            border-radius: 6px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
-            padding: 8px;
-            gap: 6px;
-            height: 100vh;
+            gap: 8px;
         }
 
-        /* VINO LOGO CONTAINER */
-        .sidebar-logo-box {
+        .brand-box {
             background: #ffffff;
-            border-radius: 5px;
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-bottom: 3px solid var(--vino-red);
+            border-radius: 4px;
+            padding: 6px;
+            text-align: center;
         }
 
-        .sidebar-logo-img {
-            max-height: 42px;
-            max-width: 100%;
-            object-fit: contain;
-        }
-
-        .sidebar-logo-fallback {
+        .brand-fallback {
             font-size: 1.6rem;
             font-weight: 900;
             letter-spacing: 3px;
             color: #000000;
             font-style: italic;
-            text-align: center;
         }
 
-        .sidebar-logo-sub {
+        .brand-fallback span { color: var(--vino-red); }
+
+        .brand-sub {
             font-size: 0.55rem;
             font-weight: 800;
-            color: #333333;
+            color: #333;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            margin-top: -2px;
-        }
-
-        .sidebar-logo-fallback span { color: var(--vino-red); }
-
-        /* TIME & WEATHER WIDGET */
-        .widget-card {
-            background: #181820;
-            border: 1px solid #2a2a35;
-            border-radius: 5px;
-            padding: 6px 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
+            margin-top: -3px;
         }
 
         .widget-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 700;
+            background: #181820;
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid #2a2a35;
         }
 
         #clock-display {
             background: var(--vino-red);
-            color: #ffffff;
+            color: #fff;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 1.15rem;
             font-weight: 900;
-            text-align: center;
-            padding: 2px;
+            padding: 2px 8px;
             border-radius: 3px;
-            letter-spacing: 1px;
-        }
-
-        /* MARKET INDEX PANEL */
-        .market-card {
-            background: #181820;
-            border: 1px solid #2a2a35;
-            border-radius: 5px;
-            padding: 5px 6px;
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .market-header {
-            font-size: 0.68rem;
-            font-weight: 900;
-            color: #ffab00;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            border-bottom: 1px solid #282835;
-            padding-bottom: 2px;
-            display: flex;
-            justify-content: space-between;
         }
 
         .market-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 3px;
+            gap: 4px;
         }
 
         .market-item {
-            background: #121218;
-            padding: 2px 4px;
-            border-radius: 3px;
+            background: #181820;
+            border: 1px solid #2a2a35;
+            padding: 4px 6px;
+            border-radius: 4px;
             display: flex;
             flex-direction: column;
         }
 
-        .market-name {
-            font-size: 0.58rem;
-            color: #aaaaaa;
-            font-weight: 700;
-        }
-
-        .market-val {
-            font-size: 0.72rem;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .market-change {
-            font-size: 0.58rem;
-            font-weight: 700;
-        }
-
+        .market-name { font-size: 0.6rem; color: #aaa; font-weight: 700; }
+        .market-val { font-size: 0.75rem; font-weight: 800; color: #fff; }
+        .market-change { font-size: 0.6rem; font-weight: 700; }
         .up { color: #00e676; }
         .down { color: #ff5252; }
 
-        /* SPORTS RSS NEWS PUSH PANEL */
-        .rss-panel {
-            background: #14141a;
-            border: 1px solid #282832;
-            border-radius: 5px;
-            flex: 1;
+        /* CARD 3: SPORTS RSS PUSH */
+        .rss-card {
+            background: #0e0e12;
+            border: 2px solid var(--vino-red);
+            border-radius: 6px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -267,120 +195,91 @@
 
         .rss-header {
             background: var(--vino-red);
-            color: #ffffff;
-            padding: 5px 8px;
+            color: #fff;
+            padding: 6px 10px;
             font-weight: 900;
-            font-size: 0.72rem;
-            letter-spacing: 0.8px;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
 
         .rss-feed-list {
-            padding: 5px;
-            overflow-y: hidden;
+            padding: 6px;
             display: flex;
             flex-direction: column;
             gap: 5px;
+            overflow-y: hidden;
             flex: 1;
         }
 
         .rss-item {
-            background: #1c1c24;
+            background: #181820;
             border-left: 3px solid #ffab00;
-            padding: 5px 6px;
+            padding: 5px 8px;
             border-radius: 3px;
         }
 
         .rss-item-title {
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 2px;
+            color: #fff;
             line-height: 1.2;
+            margin-bottom: 2px;
         }
 
         .rss-item-snippet {
-            font-size: 0.6rem;
-            color: #bbbbbb;
+            font-size: 0.62rem;
+            color: #bbb;
             line-height: 1.15;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            margin-bottom: 2px;
-        }
-
-        .rss-item-time {
-            font-size: 0.55rem;
-            color: #ffab00;
-            font-weight: 700;
         }
     </style>
 </head>
 <body>
 
-    <div class="layout-container">
+    <div class="dashboard">
 
-        <!-- LEFT AREA -->
-        <div class="left-content">
-            
-            <!-- TOP ROW: 2 LIVE TV STATIONS (LOCKED TO 16:9 PROPORTION) -->
-            <div class="tv-channels-row">
-                <div class="media-box">
-                    <div class="media-label">RTHK 32 • HK Live</div>
-                    <video id="tv-1" autoplay muted playsinline></video>
-                </div>
-
-                <div class="media-box">
-                    <div class="media-label">DW World News</div>
-                    <video id="tv-2" autoplay muted playsinline></video>
-                </div>
+        <!-- TOP ZONE: 2 LIVE UNSTRETCHED TV STATIONS -->
+        <div class="top-zone">
+            <div class="tv-box">
+                <div class="tv-label">RTHK 32 • HK Live</div>
+                <video id="tv-1" autoplay muted playsinline></video>
             </div>
 
-            <!-- BOTTOM ROW: PROMO BANNER AREA -->
-            <div class="promo-big-row">
-                <div class="promo-box">
-                    <div class="media-label" style="border-left-color: #ffab00; font-size: 0.85rem; padding: 4px 12px;">VINO Bar Special</div>
-                    <img src="promo.jpg" alt="VINO House-Made Coffee Protein Shake">
-                </div>
+            <div class="tv-box">
+                <div class="tv-label">DW World News</div>
+                <video id="tv-2" autoplay muted playsinline></video>
             </div>
-
         </div>
 
-        <!-- RIGHT SIDEBAR (20% SLIM WIDTH) -->
-        <div class="right-sidebar">
+        <!-- BOTTOM ZONE: 3 HORIZONTAL CARDS -->
+        <div class="bottom-zone">
             
-            <!-- VINO LOGO -->
-            <div class="sidebar-logo-box">
-                <img src="vino_logo.png" alt="VINO Personal Training" class="sidebar-logo-img" onerror="this.style.display='none'; document.getElementById('sidebar-logo-fallback').style.display='block';">
-                <div id="sidebar-logo-fallback" class="sidebar-logo-fallback" style="display:none;">
-                    V<span>I</span>NO
-                    <div class="sidebar-logo-sub">Personal Training</div>
-                </div>
+            <!-- CARD 1: PROMO POSTER -->
+            <div class="promo-card">
+                <div class="tv-label" style="border-left-color: #ffab00;">VINO Bar Feature</div>
+                <img src="promo.jpg" alt="VINO Coffee Protein Shake" onerror="this.src='https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80';">
             </div>
 
-            <!-- TIME & WEATHER -->
-            <div class="widget-card">
-                <div id="clock-display">00:00:00</div>
-                <div class="widget-row" style="color: #dddddd;">
-                    <span>📅 <span id="live-date">---, -- ---</span></span>
+            <!-- CARD 2: BRANDING & MARKETS -->
+            <div class="info-card">
+                <div class="brand-box">
+                    <img src="vino_logo.png" alt="VINO" style="max-height: 32px; object-fit: contain;" onerror="this.style.display='none'; document.getElementById('brand-fallback').style.display='block';">
+                    <div id="brand-fallback" class="brand-fallback" style="display:none;">
+                        V<span>I</span>NO
+                        <div class="brand-sub">Personal Training</div>
+                    </div>
                 </div>
-                <div class="widget-row" style="color: #4da6ff;">
-                    <span>☀ HK Temp</span>
-                    <span id="weather-temp" style="font-size: 0.95rem; color: #ffffff;">--°C</span>
-                </div>
-            </div>
 
-            <!-- WORLD MARKETS -->
-            <div class="market-card">
-                <div class="market-header">
-                    <span>📊 World Markets</span>
-                    <span style="font-size: 0.55rem; color: #888;">LIVE</span>
+                <div class="widget-row">
+                    <span id="clock-display">00:00:00</span>
+                    <span>☀ <span id="weather-temp">--°C</span> HK</span>
                 </div>
-                <div class="market-grid" id="market-container">
+
+                <div class="market-grid">
                     <div class="market-item">
                         <span class="market-name">HSI (HK)</span>
                         <span class="market-val" id="hsi-val">21,120</span>
@@ -404,14 +303,11 @@
                 </div>
             </div>
 
-            <!-- WORLD SPORTS RSS PUSH -->
-            <div class="rss-panel">
-                <div class="rss-header">
-                    <span>🏆</span>
-                    <span>World Sports Push</span>
-                </div>
+            <!-- CARD 3: WORLD SPORTS RSS -->
+            <div class="rss-card">
+                <div class="rss-header">🏆 World Sports News Push</div>
                 <div class="rss-feed-list" id="rss-container">
-                    <div style="color: #888; font-size: 0.7rem; text-align: center; margin-top: 10px;">Loading sports headlines...</div>
+                    <div style="color: #888; font-size: 0.7rem; text-align: center; margin-top: 10px;">Loading headlines...</div>
                 </div>
             </div>
 
@@ -420,130 +316,72 @@
     </div>
 
     <script>
-        function updateClockAndDate() {
+        function updateClock() {
             var now = new Date();
             document.getElementById('clock-display').innerText = now.toLocaleTimeString();
-            var options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
-            document.getElementById('live-date').innerText = now.toLocaleDateString('en-GB', options);
         }
-        setInterval(updateClockAndDate, 1000);
-        updateClockAndDate();
+        setInterval(updateClock, 1000);
+        updateClock();
 
         function fetchWeather() {
             fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en')
-                .then(response => response.json())
-                .then(data => {
-                    var temp = data.temperature.data[0].value;
-                    document.getElementById('weather-temp').innerText = temp + "°C";
-                })
-                .catch(err => { console.log("Weather error:", err); });
+                .then(r => r.json())
+                .then(d => { document.getElementById('weather-temp').innerText = d.temperature.data[0].value + "°C"; })
+                .catch(e => console.log(e));
         }
         fetchWeather();
-        setInterval(fetchWeather, 600000);
 
         function fetchMarketData() {
             fetch('https://query1.finance.yahoo.com/v7/finance/quote?symbols=^HSI,^DJI,^GSPC,^IXIC')
-                .then(response => response.json())
+                .then(r => r.json())
                 .then(data => {
                     if (data.quoteResponse && data.quoteResponse.result) {
-                        var quotes = data.quoteResponse.result;
-                        quotes.forEach(function(q) {
-                            var price = q.regularMarketPrice ? q.regularMarketPrice.toLocaleString(undefined, {maximumFractionDigits:0}) : '--';
-                            var chg = q.regularMarketChangePercent ? q.regularMarketChangePercent.toFixed(2) + '%' : '0.00%';
+                        data.quoteResponse.result.forEach(q => {
+                            var p = q.regularMarketPrice ? q.regularMarketPrice.toLocaleString(undefined, {maximumFractionDigits:0}) : '--';
+                            var c = q.regularMarketChangePercent ? q.regularMarketChangePercent.toFixed(2) + '%' : '0.00%';
                             var isUp = q.regularMarketChangePercent >= 0;
                             var cls = isUp ? 'market-change up' : 'market-change down';
-                            var prefix = isUp ? '+' : '';
+                            var pre = isUp ? '+' : '';
 
-                            if (q.symbol === '^HSI') {
-                                document.getElementById('hsi-val').innerText = price;
-                                document.getElementById('hsi-chg').innerText = prefix + chg;
-                                document.getElementById('hsi-chg').className = cls;
-                            } else if (q.symbol === '^DJI') {
-                                document.getElementById('dow-val').innerText = price;
-                                document.getElementById('dow-chg').innerText = prefix + chg;
-                                document.getElementById('dow-chg').className = cls;
-                            } else if (q.symbol === '^GSPC') {
-                                document.getElementById('sp-val').innerText = price;
-                                document.getElementById('sp-chg').innerText = prefix + chg;
-                                document.getElementById('sp-chg').className = cls;
-                            } else if (q.symbol === '^IXIC') {
-                                document.getElementById('nas-val').innerText = price;
-                                document.getElementById('nas-chg').innerText = prefix + chg;
-                                document.getElementById('nas-chg').className = cls;
-                            }
+                            if (q.symbol === '^HSI') { document.getElementById('hsi-val').innerText = p; document.getElementById('hsi-chg').innerText = pre + c; document.getElementById('hsi-chg').className = cls; }
+                            else if (q.symbol === '^DJI') { document.getElementById('dow-val').innerText = p; document.getElementById('dow-chg').innerText = pre + c; document.getElementById('dow-chg').className = cls; }
+                            else if (q.symbol === '^GSPC') { document.getElementById('sp-val').innerText = p; document.getElementById('sp-chg').innerText = pre + c; document.getElementById('sp-chg').className = cls; }
+                            else if (q.symbol === '^IXIC') { document.getElementById('nas-val').innerText = p; document.getElementById('nas-chg').innerText = pre + c; document.getElementById('nas-chg').className = cls; }
                         });
                     }
-                })
-                .catch(err => { console.log("Market fetch error.", err); });
+                }).catch(e => console.log(e));
         }
         fetchMarketData();
-        setInterval(fetchMarketData, 300000);
 
         function fetchSportsRSS() {
-            var fallbackRss = 'http://feeds.bbci.co.uk/sport/rss.xml';
-            var apiUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(fallbackRss);
-
+            var apiUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('http://feeds.bbci.co.uk/sport/rss.xml');
             fetch(apiUrl)
-                .then(response => response.json())
+                .then(r => r.json())
                 .then(data => {
                     if (data.status === 'ok' && data.items.length > 0) {
                         var container = document.getElementById('rss-container');
                         container.innerHTML = '';
-                        
-                        data.items.slice(0, 4).forEach(function(item) {
+                        data.items.slice(0, 3).forEach(item => {
                             var div = document.createElement('div');
                             div.className = 'rss-item';
-                            var cleanDesc = item.description ? item.description.replace(/<[^>]*>?/gm, '') : '';
-                            var pubTime = new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                            
-                            div.innerHTML = 
-                                '<div class="rss-item-title">' + item.title + '</div>' +
-                                '<div class="rss-item-snippet">' + cleanDesc + '</div>' +
-                                '<div class="rss-item-time">🏆 WORLD SPORTS • ' + pubTime + '</div>';
-                            
+                            var desc = item.description ? item.description.replace(/<[^>]*>?/gm, '') : '';
+                            div.innerHTML = '<div class="rss-item-title">' + item.title + '</div><div class="rss-item-snippet">' + desc + '</div>';
                             container.appendChild(div);
                         });
                     }
-                })
-                .catch(err => { console.log("Sports RSS Fetch error:", err); });
+                }).catch(e => console.log(e));
         }
         fetchSportsRSS();
-        setInterval(fetchSportsRSS, 120000);
 
-        function loadStream(id, liveUrl) {
+        function loadStream(id, url) {
             var elem = document.getElementById(id);
-            if (!elem) return;
-
             if (Hls.isSupported()) {
-                var hls = new Hls({
-                    manifestLoadingTimeOut: 10000,
-                    manifestLoadingMaxRetry: 5
-                });
-                hls.loadSource(liveUrl);
+                var hls = new Hls({ manifestLoadingTimeOut: 10000 });
+                hls.loadSource(url);
                 hls.attachMedia(elem);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    elem.muted = true;
-                    elem.play().catch(function(e) { console.log("Autoplay block on " + id, e); });
-                });
-                hls.on(Hls.Events.ERROR, function(event, data) {
-                    if (data.fatal) {
-                        switch (data.type) {
-                            case Hls.ErrorTypes.NETWORK_ERROR:
-                                hls.startLoad();
-                                break;
-                            case Hls.ErrorTypes.MEDIA_ERROR:
-                                hls.recoverMediaError();
-                                break;
-                            default:
-                                hls.destroy();
-                                break;
-                        }
-                    }
-                });
+                hls.on(Hls.Events.MANIFEST_PARSED, function() { elem.muted = true; elem.play(); });
             } else if (elem.canPlayType('application/vnd.apple.mpegurl')) {
-                elem.src = liveUrl;
-                elem.muted = true;
-                elem.play();
+                elem.src = url; elem.muted = true; elem.play();
             }
         }
 

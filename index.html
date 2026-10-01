@@ -36,10 +36,10 @@
             background-color: #000;
         }
 
-        /* TIER 1: HEADER BANNER (WHITE BACKGROUND FOR BLACK LOGO) */
+        /* TIER 1: WHITE HEADER BANNER FOR MAXIMUM LOGO CONTRAST */
         .header-bar {
             grid-row: 1;
-            background: #ffffff; /* WHITE HEADER BAR FOR HIGH LOGO CONTRAST */
+            background: #ffffff;
             border-bottom: 4px solid var(--vino-red);
             display: flex;
             justify-content: space-between;
@@ -103,7 +103,7 @@
             border: none;
         }
 
-        /* TIER 2: MAIN 5-SCREEN BODY WITH RED FRAMES */
+        /* TIER 2: MAIN 5-SCREEN BODY WITH VINO RED BORDERS */
         .main-display-body {
             grid-row: 2;
             display: grid;
@@ -140,7 +140,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 2px solid var(--vino-red); /* VINO RED FRAME */
+            border: 2px solid var(--vino-red);
             border-radius: 6px;
             overflow: hidden;
             box-shadow: 0 0 10px rgba(138, 6, 37, 0.4);
@@ -216,7 +216,7 @@
 
     <div class="dashboard">
 
-        <!-- TIER 1: WHITE HEADER BANNER WITH BRANDING & LIVE WIDGETS -->
+        <!-- TIER 1: WHITE HEADER BANNER -->
         <div class="header-bar">
             
             <div class="logo-container">
@@ -245,13 +245,13 @@
             <!-- TOP HALF: 2 BIG SCREENS -->
             <div class="top-row-grid">
                 
-                <!-- TOP LEFT: REDBULL TV (ACTION SPORTS) -->
+                <!-- TOP LEFT: AL JAZEERA ENGLISH -->
                 <div class="video-box">
-                    <div class="video-label">RedBull TV • Action Sports</div>
-                    <video id="stream-redbull" autoplay muted playsinline></video>
+                    <div class="video-label">Al Jazeera English Live</div>
+                    <video id="stream-aljazeera" autoplay muted playsinline></video>
                 </div>
 
-                <!-- TOP RIGHT: DW NEWS WORLD BROADCAST -->
+                <!-- TOP RIGHT: DW NEWS WORLD -->
                 <div class="video-box">
                     <div class="video-label">DW World News</div>
                     <video id="stream-dw" autoplay muted playsinline></video>
@@ -262,10 +262,10 @@
             <!-- BOTTOM HALF: 3 SMALLER SCREENS -->
             <div class="bottom-row-grid">
                 
-                <!-- BOTTOM LEFT: EURONEWS LIVE -->
+                <!-- BOTTOM LEFT: REDBULL TV -->
                 <div class="video-box">
-                    <div class="video-label">Euronews Live</div>
-                    <video id="stream-euronews" autoplay muted playsinline></video>
+                    <div class="video-label">RedBull TV • Action Sports</div>
+                    <video id="stream-redbull" autoplay muted playsinline></video>
                 </div>
 
                 <!-- BOTTOM CENTER: VINO PROTEIN SHAKE PROMO -->
@@ -274,10 +274,10 @@
                     <img src="promo.jpg" alt="VINO House-Made Coffee Protein Shake">
                 </div>
 
-                <!-- BOTTOM RIGHT: NASA TV / WORLD STREAM -->
+                <!-- BOTTOM RIGHT: FRANCE 24 ENGLISH -->
                 <div class="video-box">
-                    <div class="video-label">NASA Earth Live</div>
-                    <video id="stream-nasa" autoplay muted playsinline></video>
+                    <div class="video-label">France 24 Live</div>
+                    <video id="stream-france24" autoplay muted playsinline></video>
                 </div>
 
             </div>
@@ -318,28 +318,48 @@
         fetchWeather();
         setInterval(fetchWeather, 600000);
 
-        // 3. INITIALIZE 4 VERIFIED 24/7 BROADCAST STREAMS
+        // 3. INITIALIZE STABLE HLS BROADCAST STREAMS WITH RETRY LOGIC
         window.addEventListener('DOMContentLoaded', function() {
             var streams = [
-                // Stream 1: RedBull TV Action Sports
-                { id: 'stream-redbull', url: 'https://rbmn-live.akamaized.net/hls/live/591070/GEO_GLOBAL/master.m3u8' },
+                // Stream 1: Al Jazeera English Live
+                { id: 'stream-aljazeera', url: 'https://live-hls-web-aje.getaj.net/AJE/03.m3u8' },
                 // Stream 2: DW News World Broadcast
                 { id: 'stream-dw', url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8' },
-                // Stream 3: Euronews Live
-                { id: 'stream-euronews', url: 'https://euronews-euronews-england-samsunguk.amagi.tv/playlist.m3u8' },
-                // Stream 4: NASA HD Live
-                { id: 'stream-nasa', url: 'https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8' }
+                // Stream 3: RedBull TV Action Sports
+                { id: 'stream-redbull', url: 'https://rbmn-live.akamaized.net/hls/live/591070/GEO_GLOBAL/master.m3u8' },
+                // Stream 4: France 24 English
+                { id: 'stream-france24', url: 'https://static.france24.com/live/F24_EN_LO_HLS/live_tv.m3u8' }
             ];
 
             streams.forEach(function(s) {
                 var elem = document.getElementById(s.id);
                 if (elem && Hls.isSupported()) {
-                    var hls = new Hls();
+                    var hls = new Hls({
+                        manifestLoadingTimeOut: 15000,
+                        manifestLoadingMaxRetry: 5,
+                        levelLoadingTimeOut: 15000,
+                        levelLoadingMaxRetry: 5
+                    });
                     hls.loadSource(s.url);
                     hls.attachMedia(elem);
                     hls.on(Hls.Events.MANIFEST_PARSED, function() {
                         elem.muted = true;
                         elem.play().catch(function(e) { console.log("Autoplay block on " + s.id, e); });
+                    });
+                    hls.on(Hls.Events.ERROR, function (event, data) {
+                        if (data.fatal) {
+                            switch (data.type) {
+                                case Hls.ErrorTypes.NETWORK_ERROR:
+                                    hls.startLoad();
+                                    break;
+                                case Hls.ErrorTypes.MEDIA_ERROR:
+                                    hls.recoverMediaError();
+                                    break;
+                                default:
+                                    hls.destroy();
+                                    break;
+                            }
+                        }
                     });
                 } else if (elem && elem.canPlayType('application/vnd.apple.mpegurl')) {
                     elem.src = s.url;

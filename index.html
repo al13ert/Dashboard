@@ -239,13 +239,13 @@
             <!-- TOP HALF: 2 BIG SCREENS -->
             <div class="top-row-grid">
                 
-                <!-- TOP LEFT: AL JAZEERA LIVE -->
+                <!-- TOP LEFT: SKY NEWS UK (BIG SCREEN 1) -->
                 <div class="video-box">
-                    <div class="video-label">Al Jazeera English Live</div>
-                    <video id="stream-aljazeera" autoplay muted playsinline loop></video>
+                    <div class="video-label">Sky News UK Live</div>
+                    <video id="stream-sky" autoplay muted playsinline loop></video>
                 </div>
 
-                <!-- TOP RIGHT: VINO COFFEE SHAKE PROMO (BIG SCREEN) -->
+                <!-- TOP RIGHT: VINO COFFEE SHAKE PROMO (BIG SCREEN 2) -->
                 <div class="video-box">
                     <div class="video-label" style="border-left-color: #ffab00;">VINO Bar Feature</div>
                     <img src="promo.jpg" alt="VINO House-Made Coffee Protein Shake">
@@ -268,10 +268,10 @@
                     <video id="stream-dw" autoplay muted playsinline loop></video>
                 </div>
 
-                <!-- BOTTOM RIGHT: REDBULL TV SPORTS -->
+                <!-- BOTTOM RIGHT: FRANCE 24 ENGLISH -->
                 <div class="video-box">
-                    <div class="video-label">RedBull TV • Action Sports</div>
-                    <video id="stream-redbull" autoplay muted playsinline loop></video>
+                    <div class="video-label">France 24 Live</div>
+                    <video id="stream-france24" autoplay muted playsinline loop></video>
                 </div>
 
             </div>
@@ -310,53 +310,50 @@
         fetchWeather();
         setInterval(fetchWeather, 600000);
 
-        function loadStream(id, liveUrl, fallbackVideoUrl) {
+        function loadStream(id, liveUrl) {
             var elem = document.getElementById(id);
             if (!elem) return;
 
-            function playFallback() {
-                console.log("Playing fallback video for " + id);
-                elem.src = fallbackVideoUrl;
-                elem.muted = true;
-                elem.play().catch(function(e) { console.log("Fallback play blocked", e); });
-            }
-
             if (Hls.isSupported()) {
                 var hls = new Hls({
-                    manifestLoadingTimeOut: 8000,
-                    manifestLoadingMaxRetry: 3,
-                    levelLoadingTimeOut: 8000
+                    manifestLoadingTimeOut: 10000,
+                    manifestLoadingMaxRetry: 5,
+                    levelLoadingTimeOut: 10000
                 });
                 hls.loadSource(liveUrl);
                 hls.attachMedia(elem);
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     elem.muted = true;
-                    elem.play().catch(playFallback);
+                    elem.play().catch(function(e) { console.log("Autoplay block on " + id, e); });
                 });
                 hls.on(Hls.Events.ERROR, function(event, data) {
                     if (data.fatal) {
-                        hls.destroy();
-                        playFallback();
+                        switch (data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                hls.startLoad();
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                hls.recoverMediaError();
+                                break;
+                            default:
+                                hls.destroy();
+                                break;
+                        }
                     }
                 });
             } else if (elem.canPlayType('application/vnd.apple.mpegurl')) {
                 elem.src = liveUrl;
                 elem.muted = true;
-                elem.play().catch(playFallback);
-            } else {
-                playFallback();
+                elem.play();
             }
         }
 
         window.addEventListener('DOMContentLoaded', function() {
-            // High Reliability Sports & News Video Backup Loops in case ISP/CDN blocks live HLS stream
-            var sportsFallback = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
-            var newsFallback = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4";
-
-            loadStream('stream-aljazeera', 'https://live-hls-web-aje.getaj.net/AJE/index.m3u8', newsFallback);
-            loadStream('stream-rthk', 'https://rthklive2-lh.akamaihd.net/i/rthk32_1@168450/index_1080_av-b.m3u8', newsFallback);
-            loadStream('stream-dw', 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8', newsFallback);
-            loadStream('stream-redbull', 'https://rbmn-live.akamaized.net/hls/live/591070/GEO_GLOBAL/master.m3u8', sportsFallback);
+            // Highly Reliable Global Stream Endpoints
+            loadStream('stream-sky', 'https://sky-skynewsuk-samsunguk.amagi.tv/playlist.m3u8');
+            loadStream('stream-rthk', 'https://rthklive2-lh.akamaihd.net/i/rthk32_1@168450/index_1080_av-b.m3u8');
+            loadStream('stream-dw', 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8');
+            loadStream('stream-france24', 'https://static.france24.com/live/F24_EN_LO_HLS/live_tv.m3u8');
         });
     </script>
 

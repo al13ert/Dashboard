@@ -35,7 +35,7 @@
             background-color: #000000;
         }
 
-        /* LEFT CONTENT AREA: TOP 3 TV CHANNELS + BOTTOM BIG PROMO */
+        /* LEFT CONTENT AREA: TOP 2 TV CHANNELS + BOTTOM BIG PROMO */
         .left-content {
             display: grid;
             grid-template-rows: 45% 55%;
@@ -44,10 +44,10 @@
             gap: 8px;
         }
 
-        /* TOP ROW: 3 SIDE-BY-SIDE LIVE TV CHANNELS */
+        /* TOP ROW: 2 SIDE-BY-SIDE LIVE TV CHANNELS (50% / 50%) */
         .tv-channels-row {
             display: grid;
-            grid-template-columns: calc(33.33% - 5.33px) calc(33.33% - 5.33px) calc(33.34% - 5.33px);
+            grid-template-columns: calc(50% - 4px) calc(50% - 4px);
             gap: 8px;
             width: 100%;
             height: 100%;
@@ -282,26 +282,25 @@
 
     <div class="layout-container">
 
-        <!-- LEFT AREA: 3 TV CHANNELS TOP + BIG PROMO BOTTOM -->
+        <!-- LEFT AREA: 2 TV CHANNELS TOP + BIG PROMO BOTTOM -->
         <div class="left-content">
             
+            <!-- TOP ROW: 2 LIVE TV STATIONS -->
             <div class="tv-channels-row">
+                <!-- TV 1: RTHK 32 -->
                 <div class="media-box">
                     <div class="media-label">RTHK 32 • HK Live</div>
                     <video id="tv-1" autoplay muted playsinline></video>
                 </div>
 
+                <!-- TV 2: DW NEWS WORLD -->
                 <div class="media-box">
                     <div class="media-label">DW World News</div>
                     <video id="tv-2" autoplay muted playsinline></video>
                 </div>
-
-                <div class="media-box">
-                    <div class="media-label">France 24 Live</div>
-                    <video id="tv-3" autoplay muted playsinline></video>
-                </div>
             </div>
 
+            <!-- BOTTOM ROW: BIG PROMO PROTEIN SHAKE DISPLAY -->
             <div class="promo-big-row">
                 <div class="media-box" style="border-width: 3px;">
                     <div class="media-label" style="border-left-color: #ffab00; font-size: 0.95rem; padding: 6px 14px;">VINO Bar Special</div>
@@ -314,7 +313,7 @@
         <!-- RIGHT SIDEBAR: LOGO, WEATHER, MARKETS & RSS NEWS -->
         <div class="right-sidebar">
             
-            <!-- VINO LOGO -->
+            <!-- VINO LOGO (WHITE BOX) -->
             <div class="sidebar-logo-box">
                 <img src="vino_logo.png" alt="VINO Personal Training" class="sidebar-logo-img" onerror="this.style.display='none'; document.getElementById('sidebar-logo-fallback').style.display='block';">
                 <div id="sidebar-logo-fallback" class="sidebar-logo-fallback" style="display:none;">V<span>I</span>NO</div>
@@ -438,7 +437,7 @@
                 .catch(err => { console.log("Market fetch error, retaining base ticker.", err); });
         }
         fetchMarketData();
-        setInterval(fetchMarketData, 300000); // Auto-update market rates every 5 mins
+        setInterval(fetchMarketData, 300000);
 
         // 4. LIVE RSS NEWS PULLER
         function fetchRSSNews() {
@@ -465,7 +464,7 @@
         fetchRSSNews();
         setInterval(fetchRSSNews, 120000);
 
-        // 5. INITIALIZE 3 TV CHANNELS
+        // 5. INITIALIZE 2 TV CHANNELS
         function loadStream(id, liveUrl) {
             var elem = document.getElementById(id);
             if (!elem) return;
@@ -506,7 +505,6 @@
         window.addEventListener('DOMContentLoaded', function() {
             loadStream('tv-1', 'https://rthklive2-lh.akamaihd.net/i/rthk32_1@168450/index_1080_av-b.m3u8');
             loadStream('tv-2', 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8');
-            loadStream('tv-3', 'https://static.france24.com/live/F24_EN_LO_HLS/live_tv.m3u8');
         });
     </script>
 

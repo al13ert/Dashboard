@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>VINO Personal Training - Sports & Fitness Hub</title>
-    <!-- HLS.js Library for Decoding Live Broadcast Streams -->
+    <title>VINO Personal Training - 5-Screen Command Center</title>
+    <!-- HLS.js Library for Broadcast Live Streams -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         * {
@@ -27,7 +27,7 @@
             color: #ffffff;
         }
 
-        /* 3-TIER HORIZONTAL DASHBOARD GRID (1920x1080) */
+        /* DASHBOARD GRID CONTAINER (1920x1080) */
         .dashboard {
             display: grid;
             width: 100vw;
@@ -37,7 +37,7 @@
             background-color: #000;
         }
 
-        /* TIER 1: HEADER BANNER (LOGO, DATE, WEATHER, CLOCK) */
+        /* TIER 1: HEADER BANNER WITH BRANDING & WIDGETS */
         .header-bar {
             grid-row: 1;
             background: linear-gradient(180deg, #181820 0%, #0d0d12 100%);
@@ -45,7 +45,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 35px;
+            padding: 0 30px;
         }
 
         .logo-container {
@@ -54,7 +54,14 @@
             gap: 15px;
         }
 
-        .logo-text-main {
+        .logo-img {
+            height: 52px;
+            max-width: 220px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .logo-text-fallback {
             font-size: 2.2rem;
             font-weight: 900;
             letter-spacing: 4px;
@@ -62,45 +69,30 @@
             font-style: italic;
         }
 
-        .logo-text-main span {
+        .logo-text-fallback span {
             color: var(--vino-red);
-        }
-
-        .logo-subtext {
-            font-size: 0.75rem;
-            letter-spacing: 3px;
-            color: #aaaaaa;
-            text-transform: uppercase;
-            border-left: 2px solid var(--vino-red);
-            padding-left: 12px;
-            font-style: normal;
         }
 
         .header-widgets {
             display: flex;
             align-items: center;
-            gap: 30px;
-            font-size: 1.25rem;
+            gap: 20px;
+            font-size: 1.2rem;
             font-weight: 700;
         }
 
         .widget-item {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             background: rgba(255, 255, 255, 0.05);
-            padding: 6px 18px;
+            padding: 5px 15px;
             border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        #weather-box {
-            color: #4da6ff;
-        }
-
-        #date-box {
-            color: #e0e0e0;
-        }
+        #weather-box { color: #4da6ff; }
+        #date-box { color: #e0e0e0; }
 
         #clock-box {
             background: var(--vino-red);
@@ -111,46 +103,66 @@
             border: none;
         }
 
-        /* TIER 2: MAIN 4-SQUARE SPORTS GRID */
-        .sports-grid {
+        /* TIER 2: MAIN 5-SCREEN BODY */
+        .main-display-body {
             grid-row: 2;
             display: grid;
-            grid-template-columns: 50% 50%;
-            grid-template-rows: 50% 50%;
+            grid-template-rows: 60% 40%;
             width: 100%;
             height: 100%;
+            gap: 8px;
+            padding: 8px;
             background-color: #000;
-            gap: 4px;
-            padding: 4px;
         }
 
+        /* TOP HALF: 2 BIG SCREENS */
+        .top-row-grid {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            width: 100%;
+            height: 100%;
+            gap: 8px;
+        }
+
+        /* BOTTOM HALF: 3 SMALLER SCREENS */
+        .bottom-row-grid {
+            display: grid;
+            grid-template-columns: calc(33.33% - 5.33px) calc(33.33% - 5.33px) calc(33.34% - 5.33px);
+            width: 100%;
+            height: 100%;
+            gap: 8px;
+        }
+
+        /* VIDEO CONTAINER BOXES WITH VINO RED BORDER FRAME */
         .video-box {
             position: relative;
             background-color: #000;
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 1px solid #22222a;
-            border-radius: 4px;
+            border: 2px solid var(--vino-red); /* VINO RED FRAME */
+            border-radius: 6px;
             overflow: hidden;
+            box-shadow: 0 0 10px rgba(138, 6, 37, 0.3); /* SUBTLE RED GLOW */
         }
 
-        .video-box video {
+        .video-box video, .video-box iframe {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border: none;
             background: #000;
         }
 
         .video-label {
             position: absolute;
-            top: 14px;
-            left: 14px;
+            top: 10px;
+            left: 10px;
             background: rgba(10, 10, 12, 0.9);
             color: #ffffff;
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-left: 4px solid var(--vino-red);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -159,11 +171,11 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
-        /* TIER 3: TICKER FOOTER */
+        /* TIER 3: ANNOUNCEMENT TICKER FOOTER */
         .ticker-zone {
             grid-row: 3;
             background: #0d0d12;
-            border-top: 2px solid #222;
+            border-top: 2px solid var(--vino-red);
             display: flex;
             align-items: center;
             overflow: hidden;
@@ -204,19 +216,17 @@
 
     <div class="dashboard">
 
-        <!-- TIER 1: HEADER BANNER WITH VINO LOGO, DATE, WEATHER & CLOCK -->
+        <!-- TIER 1: HEADER BANNER WITH LOGO, DATE, WEATHER & CLOCK -->
         <div class="header-bar">
             
-            <!-- VINO BRANDING -->
             <div class="logo-container">
-                <div class="logo-text-main">V<span>I</span>NO</div>
-                <div class="logo-text-sub">
-                    <div style="font-weight: 800; font-size: 0.9rem; color: #fff;">PERSONAL TRAINING</div>
-                    <div style="font-size: 0.65rem; color: #888; letter-spacing: 2px;">PERFORMANCE STUDIO</div>
-                </div>
+                <!-- VINO LOGO IMAGE -->
+                <img src="vino_logo.png" alt="VINO Personal Training" class="logo-img" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
+                
+                <!-- FALLBACK TEXT LOGO IF IMAGE FILE IS MISSING -->
+                <div id="fallback-logo" class="logo-text-fallback" style="display:none;">V<span>I</span>NO</div>
             </div>
 
-            <!-- LIVE HEADER WIDGETS -->
             <div class="header-widgets">
                 <div class="widget-item" id="date-box">
                     <span>📅</span>
@@ -232,41 +242,57 @@
 
         </div>
 
-        <!-- TIER 2: 4-SQUARE SPORTS & PERFORMANCE GRID -->
-        <div class="sports-grid">
+        <!-- TIER 2: MAIN 5-SCREEN BODY WITH RED FRAMES -->
+        <div class="main-display-body">
             
-            <!-- TOP LEFT: RED BULL TV / EXTREME SPORTS -->
-            <div class="video-box">
-                <div class="video-label">RedBull TV • Extreme Sports</div>
-                <video id="sport-1" autoplay muted playsinline></video>
+            <!-- TOP HALF: 2 BIG SCREENS -->
+            <div class="top-row-grid">
+                
+                <!-- BIG SCREEN 1: WORLD NEWS BROADCAST -->
+                <div class="video-box">
+                    <div class="video-label">World News (Sky UK)</div>
+                    <video id="stream-world" autoplay muted playsinline></video>
+                </div>
+
+                <!-- BIG SCREEN 2: VINO MOTIVATION REEL -->
+                <div class="video-box">
+                    <div class="video-label" style="border-left-color: #ffffff;">VINO Motivation & Athletic Performance</div>
+                    <video id="stream-motivation" autoplay loop muted playsinline 
+                           src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"></video>
+                </div>
+
             </div>
 
-            <!-- TOP RIGHT: GLOBAL SPORTS BROADCAST -->
-            <div class="video-box">
-                <div class="video-label">Global Sports & Fitness</div>
-                <video id="sport-2" autoplay muted playsinline></video>
-            </div>
+            <!-- BOTTOM HALF: 3 SMALLER SCREENS -->
+            <div class="bottom-row-grid">
+                
+                <!-- SMALL SCREEN 1: HOY TV -->
+                <div class="video-box">
+                    <div class="video-label">HOY TV Live</div>
+                    <video id="stream-hoy" autoplay muted playsinline></video>
+                </div>
 
-            <!-- BOTTOM LEFT: LOCAL HK SPORTS & EVENTS (RTHK) -->
-            <div class="video-box">
-                <div class="video-label">HK Sports & Local News</div>
-                <video id="sport-3" autoplay muted playsinline></video>
-            </div>
+                <!-- SMALL SCREEN 2: VIUTV / LOCAL BROADCAST -->
+                <div class="video-box">
+                    <div class="video-label">ViuTV Live Feed</div>
+                    <iframe id="iframe-viu" src="https://www.youtube.com/embed/live_stream?channel=UCvIIn1wupM4I-zL3U3N2zGg&autoplay=1&mute=1&controls=0" allow="autoplay; encrypted-media"></iframe>
+                </div>
 
-            <!-- BOTTOM RIGHT: VINO TRAINING & ATHLETIC REEL -->
-            <div class="video-box">
-                <div class="video-label" style="border-left-color: #ffffff;">VINO Motivation & Training</div>
-                <video id="sport-4" autoplay loop muted playsinline 
-                       src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"></video>
+                <!-- SMALL SCREEN 3: RTHK TV 32 -->
+                <div class="video-box">
+                    <div class="video-label">RTHK 32 • HK Sports & News</div>
+                    <video id="stream-rthk" autoplay muted playsinline></video>
+                </div>
+
             </div>
 
         </div>
 
-        <!-- TIER 3: ANNOUNCEMENTS & MOTIVATION TICKER -->
+        <!-- TIER 3: TICKER FOOTER -->
         <div class="ticker-zone">
             <div class="ticker-label">VINO LIVE</div>
             <div class="ticker-text">
-                🔥 WELCOME TO VINO PERSONAL TRAINING • CONSISTENCY DRIVES RESULTS • LIVE GLOBAL SPORTS BROADCAST • HYDRATE, EXECUTE & EXCEL 🔥
+                🔥 WELCOME TO VINO PERSONAL TRAINING • CONSISTENCY DRIVES RESULTS • LIVE LOCAL & WORLD SPORTS BROADCAST • HYDRATE & EXECUTE 🔥
             </div>
         </div>
 
@@ -276,11 +302,7 @@
         // 1. LIVE CLOCK AND DATE UPDATER
         function updateClockAndDate() {
             var now = new Date();
-            
-            // Time
             document.getElementById('clock-box').innerText = now.toLocaleTimeString();
-
-            // Date (e.g., Wed, 30 Sep 2026)
             var options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
             document.getElementById('live-date').innerText = now.toLocaleDateString('en-GB', options);
         }
@@ -300,15 +322,12 @@
         fetchWeather();
         setInterval(fetchWeather, 600000);
 
-        // 3. INITIALIZE LIVE SPORTS HLS BROADCAST STREAMS
+        // 3. INITIALIZE LIVE BROADCAST HLS STREAMS
         window.addEventListener('DOMContentLoaded', function() {
             var streams = [
-                // Quad 1: RedBull TV / Action Sports
-                { id: 'sport-1', url: 'https://rbmn-live.akamaized.net/hls/live/591070/GEO_GLOBAL/master.m3u8' },
-                // Quad 2: World Sports Broadcast (DW Sports / Int'l Feed)
-                { id: 'sport-2', url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8' },
-                // Quad 3: RTHK Live HK Sports & News (Channel 32)
-                { id: 'sport-3', url: 'https://rthklive2-lh.akamaihd.net/i/rthk32_1@168450/index_2052_av-b.m3u8' }
+                { id: 'stream-world', url: 'https://sky-skynewsuk-samsunguk.amagi.tv/playlist.m3u8' },
+                { id: 'stream-hoy', url: 'https://hoytv-live-stream.hoy.tv/ch78/index.m3u8' },
+                { id: 'stream-rthk', url: 'https://rthklive2-lh.akamaihd.net/i/rthk32_1@168450/index_2052_av-b.m3u8' }
             ];
 
             streams.forEach(function(s) {

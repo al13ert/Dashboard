@@ -64,7 +64,7 @@
             background: #000;
         }
 
-        /* BOTTOM ZONE: NOTION + PROMO + WIDGETS/MARKETS */
+        /* BOTTOM ZONE: NOTION / NEWS + PROMO + WIDGETS/MARKETS */
         .bottom-zone {
             display: grid;
             grid-template-columns: 42% 28% 30%;
@@ -73,10 +73,10 @@
             height: 100%;
         }
 
-        /* CARD 1: NOTION EMBEDDED PAGE */
+        /* CARD 1: NOTION EMBEDDED PAGE CONTAINER */
         .notion-card {
             position: relative;
-            background: #ffffff;
+            background: #121218;
             border: 2px solid var(--vino-red);
             border-radius: 6px;
             overflow: hidden;
@@ -86,8 +86,6 @@
             width: 100%;
             height: 100%;
             border: none;
-            /* DARK MODE FILTER FOR NOTION */
-            filter: invert(0.92) hue-rotate(180deg);
         }
 
         /* CARD 2: PROMO IMAGE (NO LABELS) */
@@ -204,9 +202,9 @@
         <!-- BOTTOM ZONE: NOTION + PROMO + INFO/MARKETS -->
         <div class="bottom-zone">
             
-            <!-- CARD 1: NOTION ONGOING PROJECT / TO-DO BOARD -->
+            <!-- CARD 1: NOTION EMBEDDED PAGE VIA EMBED PROXY -->
             <div class="notion-card">
-                <iframe src="https://sponge-squid-c29.notion.site/181033f7dde480198d96dc09103be618?v=50012b703fc048d88a4838396453bf18"></iframe>
+                <iframe src="https://v1.embednotion.com/embed/181033f7dde480198d96dc09103be618"></iframe>
             </div>
 
             <!-- CARD 2: PROMO POSTER (NO LABELS) -->

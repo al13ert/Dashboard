@@ -11,7 +11,7 @@
             padding: 0;
             box-sizing: border-box;
             overflow: hidden;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: Arial, Helvetica, sans-serif !important;
         }
 
         :root {
@@ -31,13 +31,13 @@
             display: grid;
             width: 100vw;
             height: 100vh;
-            grid-template-rows: 65% 35%;
+            grid-template-rows: 58% 42%;
             padding: 8px;
             gap: 8px;
             background-color: #000000;
         }
 
-        /* TOP ZONE: TWO NATIVE 16:9 TV SCREENS */
+        /* TOP ZONE: 2 LIVE UNSTRETCHED TV STATIONS (NO LABELS) */
         .top-zone {
             display: grid;
             grid-template-columns: calc(50% - 4px) calc(50% - 4px);
@@ -60,36 +60,37 @@
         .tv-box video {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* NATIVE UNSTRETCHED BROADCAST */
+            object-fit: contain;
             background: #000;
         }
 
-        .tv-label {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(10, 10, 12, 0.9);
-            color: #ffffff;
-            padding: 4px 10px;
-            border-left: 4px solid var(--vino-red);
-            font-size: 0.8rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 3px;
-            z-index: 5;
-        }
-
-        /* BOTTOM ZONE: 3 HORIZONTAL DASHBOARD CARDS */
+        /* BOTTOM ZONE: NOTION + PROMO + WIDGETS/MARKETS */
         .bottom-zone {
             display: grid;
-            grid-template-columns: 35% 30% 35%;
+            grid-template-columns: 42% 28% 30%;
             gap: 8px;
             width: 100%;
             height: 100%;
         }
 
-        /* CARD 1: PROMO IMAGE */
+        /* CARD 1: NOTION EMBEDDED PAGE */
+        .notion-card {
+            position: relative;
+            background: #ffffff;
+            border: 2px solid var(--vino-red);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .notion-card iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            /* DARK MODE FILTER FOR NOTION */
+            filter: invert(0.92) hue-rotate(180deg);
+        }
+
+        /* CARD 2: PROMO IMAGE (NO LABELS) */
         .promo-card {
             position: relative;
             background: #000;
@@ -104,7 +105,7 @@
             object-fit: cover;
         }
 
-        /* CARD 2: BRANDING, WEATHER & MARKETS */
+        /* CARD 3: BRANDING, CLOCK, WEATHER & MARKETS */
         .info-card {
             background: #0e0e12;
             border: 2px solid var(--vino-red);
@@ -156,7 +157,6 @@
         #clock-display {
             background: var(--vino-red);
             color: #fff;
-            font-family: 'Courier New', Courier, monospace;
             font-weight: 900;
             padding: 2px 8px;
             border-radius: 3px;
@@ -166,105 +166,55 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 4px;
+            flex: 1;
         }
 
         .market-item {
             background: #181820;
             border: 1px solid #2a2a35;
-            padding: 4px 6px;
+            padding: 6px 8px;
             border-radius: 4px;
             display: flex;
             flex-direction: column;
+            justify-content: center;
         }
 
-        .market-name { font-size: 0.6rem; color: #aaa; font-weight: 700; }
-        .market-val { font-size: 0.75rem; font-weight: 800; color: #fff; }
-        .market-change { font-size: 0.6rem; font-weight: 700; }
+        .market-name { font-size: 0.65rem; color: #aaa; font-weight: 700; }
+        .market-val { font-size: 0.85rem; font-weight: 800; color: #fff; }
+        .market-change { font-size: 0.65rem; font-weight: 700; }
         .up { color: #00e676; }
         .down { color: #ff5252; }
-
-        /* CARD 3: SPORTS RSS PUSH */
-        .rss-card {
-            background: #0e0e12;
-            border: 2px solid var(--vino-red);
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .rss-header {
-            background: var(--vino-red);
-            color: #fff;
-            padding: 6px 10px;
-            font-weight: 900;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .rss-feed-list {
-            padding: 6px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            overflow-y: hidden;
-            flex: 1;
-        }
-
-        .rss-item {
-            background: #181820;
-            border-left: 3px solid #ffab00;
-            padding: 5px 8px;
-            border-radius: 3px;
-        }
-
-        .rss-item-title {
-            font-size: 0.72rem;
-            font-weight: 800;
-            color: #fff;
-            line-height: 1.2;
-            margin-bottom: 2px;
-        }
-
-        .rss-item-snippet {
-            font-size: 0.62rem;
-            color: #bbb;
-            line-height: 1.15;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
     </style>
 </head>
 <body>
 
     <div class="dashboard">
 
-        <!-- TOP ZONE: 2 LIVE UNSTRETCHED TV STATIONS -->
+        <!-- TOP ZONE: 2 LIVE TV STATIONS (NO LABELS) -->
         <div class="top-zone">
             <div class="tv-box">
-                <div class="tv-label">RTHK 32 • HK Live</div>
                 <video id="tv-1" autoplay muted playsinline></video>
             </div>
 
             <div class="tv-box">
-                <div class="tv-label">DW World News</div>
                 <video id="tv-2" autoplay muted playsinline></video>
             </div>
         </div>
 
-        <!-- BOTTOM ZONE: 3 HORIZONTAL CARDS -->
+        <!-- BOTTOM ZONE: NOTION + PROMO + INFO/MARKETS -->
         <div class="bottom-zone">
             
-            <!-- CARD 1: PROMO POSTER -->
+            <!-- CARD 1: NOTION ONGOING PROJECT / TO-DO BOARD -->
+            <div class="notion-card">
+                <iframe src="https://sponge-squid-c29.notion.site/181033f7dde480198d96dc09103be618?v=50012b703fc048d88a4838396453bf18"></iframe>
+            </div>
+
+            <!-- CARD 2: PROMO POSTER (NO LABELS) -->
             <div class="promo-card">
-                <div class="tv-label" style="border-left-color: #ffab00;">VINO Bar Feature</div>
                 <img src="promo.jpg" alt="VINO Coffee Protein Shake" onerror="this.src='https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80';">
             </div>
 
-            <!-- CARD 2: BRANDING & MARKETS -->
+            <!-- CARD 3: BRANDING, CLOCK, WEATHER & MARKETS -->
             <div class="info-card">
                 <div class="brand-box">
                     <img src="vino_logo.png" alt="VINO" style="max-height: 32px; object-fit: contain;" onerror="this.style.display='none'; document.getElementById('brand-fallback').style.display='block';">
@@ -300,14 +250,6 @@
                         <span class="market-val" id="nas-val">18,100</span>
                         <span class="market-change down" id="nas-chg">-0.15%</span>
                     </div>
-                </div>
-            </div>
-
-            <!-- CARD 3: WORLD SPORTS RSS -->
-            <div class="rss-card">
-                <div class="rss-header">🏆 World Sports News Push</div>
-                <div class="rss-feed-list" id="rss-container">
-                    <div style="color: #888; font-size: 0.7rem; text-align: center; margin-top: 10px;">Loading headlines...</div>
                 </div>
             </div>
 
@@ -352,26 +294,6 @@
                 }).catch(e => console.log(e));
         }
         fetchMarketData();
-
-        function fetchSportsRSS() {
-            var apiUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('http://feeds.bbci.co.uk/sport/rss.xml');
-            fetch(apiUrl)
-                .then(r => r.json())
-                .then(data => {
-                    if (data.status === 'ok' && data.items.length > 0) {
-                        var container = document.getElementById('rss-container');
-                        container.innerHTML = '';
-                        data.items.slice(0, 3).forEach(item => {
-                            var div = document.createElement('div');
-                            div.className = 'rss-item';
-                            var desc = item.description ? item.description.replace(/<[^>]*>?/gm, '') : '';
-                            div.innerHTML = '<div class="rss-item-title">' + item.title + '</div><div class="rss-item-snippet">' + desc + '</div>';
-                            container.appendChild(div);
-                        });
-                    }
-                }).catch(e => console.log(e));
-        }
-        fetchSportsRSS();
 
         function loadStream(id, url) {
             var elem = document.getElementById(id);

@@ -299,26 +299,26 @@
         }
         fetchWeather();
 
-        // ===== HKEX STOCKS =====
+        // ===== HKEX STOCKS (Tencent public feed) =====
         const HK_STOCKS = [
-            { symbol: '0700.HK', name: 'Tencent' },
-            { symbol: '9988.HK', name: 'Alibaba' },
-            { symbol: '0005.HK', name: 'HSBC' },
-            { symbol: '1299.HK', name: 'AIA' },
-            { symbol: '0941.HK', name: 'China Mobile' },
-            { symbol: '2318.HK', name: 'Ping An' },
-            { symbol: '3690.HK', name: 'Meituan' },
-            { symbol: '1810.HK', name: 'Xiaomi' },
-            { symbol: '9618.HK', name: 'JD.com' },
-            { symbol: '0388.HK', name: 'HKEX' },
-            { symbol: '1398.HK', name: 'ICBC' },
-            { symbol: '0939.HK', name: 'CCB' },
-            { symbol: '3988.HK', name: 'Bank of China' },
-            { symbol: '0001.HK', name: 'CK Hutchison' },
-            { symbol: '0016.HK', name: 'SHK Prop' },
-            { symbol: '2388.HK', name: 'BOC Hong Kong' },
-            { symbol: '0883.HK', name: 'CNOOC' },
-            { symbol: '0267.HK', name: 'CITIC' }
+            { tencent: 'hk00700', code: '0700', name: 'Tencent' },
+            { tencent: 'hk09988', code: '9988', name: 'Alibaba' },
+            { tencent: 'hk00005', code: '0005', name: 'HSBC' },
+            { tencent: 'hk01299', code: '1299', name: 'AIA' },
+            { tencent: 'hk00941', code: '0941', name: 'China Mobile' },
+            { tencent: 'hk02318', code: '2318', name: 'Ping An' },
+            { tencent: 'hk03690', code: '3690', name: 'Meituan' },
+            { tencent: 'hk01810', code: '1810', name: 'Xiaomi' },
+            { tencent: 'hk09618', code: '9618', name: 'JD.com' },
+            { tencent: 'hk00388', code: '0388', name: 'HKEX' },
+            { tencent: 'hk01398', code: '1398', name: 'ICBC' },
+            { tencent: 'hk00939', code: '0939', name: 'CCB' },
+            { tencent: 'hk03988', code: '3988', name: 'Bank of China' },
+            { tencent: 'hk00001', code: '0001', name: 'CK Hutchison' },
+            { tencent: 'hk00016', code: '0016', name: 'SHK Prop' },
+            { tencent: 'hk02388', code: '2388', name: 'BOC Hong Kong' },
+            { tencent: 'hk00883', code: '0883', name: 'CNOOC' },
+            { tencent: 'hk00267', code: '0267', name: 'CITIC' }
         ];
 
         function buildTickerHTML(quotes) {
@@ -350,71 +350,87 @@
         }
 
         renderTicker(HK_STOCKS.map(s => ({
-            code: s.symbol.replace('.HK', ''),
+            code: s.code,
             name: s.name,
             price: null,
             changePercent: null
         })));
 
-        async function fetchHKStocks() {
-            const symbols = HK_STOCKS.map(s => s.symbol).join(',');
-            const yahooUrl = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=' + symbols;
+        function parseTencent(text) {
+            const map = {};
+            const lines = text.split(';');
 
-            let results = null;
+            lines.forEach(line => {
+                const m = line.match(/v_(hk\d+)="([^"]*)"/);
+                if (!m) return;
+                const key = m[1];
+                const fields = m[2].split('~');
+                if (fields.length < 5) return;
+
+                const current = parseFloat(fields[3]);
+                const prevClose = parseFloat(fields[4]);
+                let changePercent = null;
+                if (!isNaN(current) && !isNaN(prevClose) && prevClose !== 0) {
+                    changePercent = ((current - prevClose) / prevClose) * 100;
+                }
+
+                map[key] = {
+                    price: isNaN(current) ? null : current,
+                    changePercent: changePercent
+                };
+            });
+
+            return HK_STOCKS.map(s => ({
+                code: s.code,
+                name: s.name,
+                price: map[s.tencent] ? map[s.tencent].price : null,
+                changePercent: map[s.tencent] ? map[s.tencent].changePercent : null
+            }));
+        }
+
+        async function fetchViaProxy(url) {
+            const proxies = [
+                u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+                u => 'https://corsproxy.io/?' + encodeURIComponent(u),
+                u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u)
+            ];
+
+            for (const make of proxies) {
+                try {
+                    const r = await fetch(make(url));
+                    if (r.ok) {
+                        const text = await r.text();
+                        if (text && text.includes('v_hk')) return text;
+                    }
+                } catch (e) {}
+            }
+            return null;
+        }
+
+        async function fetchHKStocks() {
+            const codes = HK_STOCKS.map(s => s.tencent).join(',');
+            const tencentUrl = 'https://qt.gtimg.cn/q=' + codes;
+
+            let text = null;
 
             try {
-                const r = await fetch(yahooUrl);
+                const r = await fetch(tencentUrl);
                 if (r.ok) {
-                    const data = await r.json();
-                    if (data.quoteResponse && data.quoteResponse.result) {
-                        results = data.quoteResponse.result;
+                    text = await r.text();
+                    if (text && text.includes('v_hk')) {
+                        renderTicker(parseTencent(text));
+                        return;
                     }
                 }
             } catch (e) {}
 
-            if (!results) {
-                try {
-                    const r = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(yahooUrl));
-                    if (r.ok) {
-                        const data = await r.json();
-                        if (data.quoteResponse && data.quoteResponse.result) {
-                            results = data.quoteResponse.result;
-                        }
-                    }
-                } catch (e) {}
-            }
-
-            if (!results) {
-                try {
-                    const r = await fetch('https://corsproxy.io/?' + encodeURIComponent(yahooUrl));
-                    if (r.ok) {
-                        const data = await r.json();
-                        if (data.quoteResponse && data.quoteResponse.result) {
-                            results = data.quoteResponse.result;
-                        }
-                    }
-                } catch (e) {}
-            }
-
-            if (!results) {
-                console.warn('HKEX data unavailable');
+            text = await fetchViaProxy(tencentUrl);
+            if (text) {
+                renderTicker(parseTencent(text));
                 return;
             }
 
-            const map = {};
-            results.forEach(q => { map[q.symbol] = q; });
-
-            const quotes = HK_STOCKS.map(s => {
-                const q = map[s.symbol];
-                return {
-                    code: s.symbol.replace('.HK', ''),
-                    name: s.name,
-                    price: q ? q.regularMarketPrice : null,
-                    changePercent: q ? q.regularMarketChangePercent : null
-                };
-            });
-
-            renderTicker(quotes);
+            console.warn('HKEX data unavailable – all sources failed');
         }
 
         fetchHKStocks();
